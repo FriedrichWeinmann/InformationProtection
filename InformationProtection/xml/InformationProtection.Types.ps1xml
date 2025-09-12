@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Types>
+	<Type>
+		<Name>Microsoft.InformationProtection.Label</Name>
+		<Members>
+			<ScriptProperty>
+				<Name>ParentName</Name>
+				<GetScriptBlock>
+$this.Parent.Name
+				</GetScriptBlock>
+			</ScriptProperty>
+			<ScriptProperty>
+				<Name>FQLA</Name>
+				<GetScriptBlock>
+if (-not $this.Parent) { $this.Name -replace '^\s+|\s+$' }
+else { "$($this.Parent.Name -replace '^\s+|\s+$')\$($this.Name -replace '^\s+|\s+$')" }
+				</GetScriptBlock>
+			</ScriptProperty>
+		</Members>
+	</Type>
+</Types>

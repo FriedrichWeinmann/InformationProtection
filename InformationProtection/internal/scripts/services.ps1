@@ -1,0 +1,2 @@
+﻿Register-EntraService -Name AzureRightsManagement -ServiceUrl 'https://aadrm.com/' -Resource 'https://aadrm.com/'
+Register-EntraService -Name MIPSyncService -ServiceUrl 'https://psor.o365syncservice.com' -Resource 'https://psor.o365syncservice.com'

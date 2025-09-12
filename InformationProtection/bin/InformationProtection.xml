@@ -1,0 +1,249 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>InformationProtection</name>
+    </assembly>
+    <members>
+        <member name="T:InformationProtection.AuthDelegateImplementation">
+            <summary>
+            Creates an authentication delegate, that is called by the SDK to get the entra tokens
+            </summary>
+        </member>
+        <member name="M:InformationProtection.AuthDelegateImplementation.#ctor(System.Management.Automation.PSObject,System.Management.Automation.PSObject)">
+            <summary>
+            Creates a new authentication delegate
+            </summary>
+            <param name="AzureRightsManagement">The EntraAuth token for the Azure Rights Management</param>
+            <param name="MIPSyncService">The EntraAuth token for the Microsoft Information Protection Sync Service</param>
+        </member>
+        <member name="M:InformationProtection.AuthDelegateImplementation.AcquireToken(Microsoft.InformationProtection.Identity,System.String,System.String,System.String)">
+            <summary>
+            Give me a token for the requested resource!
+            </summary>
+            <param name="identity">The user that should be the source of the token. Ignored, since PowerShell assumes a single user connection per process.</param>
+            <param name="authority">The authority owning the token. Handled externally in the EntraAUth token and ignored here.</param>
+            <param name="resource">The resource we want the token for.</param>
+            <param name="claims">Some claims we don't do</param>
+            <returns>The token string to use.</returns>
+        </member>
+        <member name="M:InformationProtection.AuthDelegateImplementation.GetAppInfo">
+            <summary>
+            Return information about the application owning the token
+            </summary>
+            <returns>Some barebones application information</returns>
+        </member>
+        <member name="M:InformationProtection.AuthDelegateImplementation.GetPrincipal">
+            <summary>
+            Get information about the currently connected principal
+            </summary>
+            <returns>The currently connected principal (UPN or Object ID)</returns>
+        </member>
+        <member name="T:InformationProtection.ConsentDelegateImplementation">
+            <summary>
+            Always say "Yes"
+            </summary>
+        </member>
+        <member name="M:InformationProtection.ConsentDelegateImplementation.GetUserConsent(System.String)">
+            <summary>
+            Ask whether it is ok (it always is)
+            </summary>
+            <param name="url">Some Url we are going to ignore</param>
+            <returns>Always "Accept"</returns>
+        </member>
+        <member name="T:InformationProtection.EntraAuthToken">
+            <summary>
+            Wrapper Class around the EntraAuth token
+            </summary>
+        </member>
+        <member name="F:InformationProtection.EntraAuthToken.Token">
+            <summary>
+            The original token from EntraAuth
+            </summary>
+        </member>
+        <member name="P:InformationProtection.EntraAuthToken.AppID">
+            <summary>
+            The Application ID the token is for
+            </summary>
+        </member>
+        <member name="M:InformationProtection.EntraAuthToken.#ctor(System.Management.Automation.PSObject)">
+            <summary>
+            Creates a wrapper around an EntraAuth token C# code can interact with
+            </summary>
+            <param name="Token">Hopefully a genuine EntraAuth(tm) token object</param>
+        </member>
+        <member name="M:InformationProtection.EntraAuthToken.GetToken">
+            <summary>
+            Get the latest token string, after making sure it hasn't expired
+            </summary>
+            <returns>An Entra access token.</returns>
+        </member>
+        <member name="M:InformationProtection.EntraAuthToken.GetUser">
+            <summary>
+            Returns the user identifier of the associated token. Usually the UPN of the user or the object ID of the Service Principal.
+            </summary>
+            <returns>The UPN of the user or the object ID of the Service Principal</returns>
+        </member>
+        <member name="T:InformationProtection.File">
+            <summary>
+            Wrapper around the MIP Tools specific to a single file.
+            </summary>
+        </member>
+        <member name="P:InformationProtection.File.Name">
+            <summary>
+            The name of the file
+            </summary>
+        </member>
+        <member name="P:InformationProtection.File.Path">
+            <summary>
+            The full path of the file
+            </summary>
+        </member>
+        <member name="P:InformationProtection.File.Handler">
+            <summary>
+            The file handler, used to execute logic with
+            </summary>
+        </member>
+        <member name="P:InformationProtection.File.Label">
+            <summary>
+            The label object, containing all the details on the labels
+            </summary>
+        </member>
+        <member name="P:InformationProtection.File.IsProtected">
+            <summary>
+            Is the file protected?
+            </summary>
+        </member>
+        <member name="P:InformationProtection.File.LabelName">
+            <summary>
+            Name of the applied label (if any)
+            </summary>
+        </member>
+        <member name="P:InformationProtection.File.LabelID">
+            <summary>
+            ID of the applied label (if any)
+            </summary>
+        </member>
+        <member name="M:InformationProtection.File.#ctor(PSFramework.Parameter.PathFileSingleParameter)">
+            <summary>
+            Create a new file object from a path
+            </summary>
+            <param name="Path">The path to the file. Can be PowerShell-relative, will be resolved.</param>
+            <exception cref="T:System.InvalidOperationException">Without connection, nothing can happen.</exception>
+        </member>
+        <member name="M:InformationProtection.File.#ctor(System.Object)">
+            <summary>
+            Create a new file object from a path.
+            </summary>
+            <param name="Path">The path to the file. Can be PowerShell-relative, will be resolved.</param>
+        </member>
+        <member name="M:InformationProtection.File.RefreshState">
+            <summary>
+            Reloads the label and protection status information
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Can only be called if connected, has a path and the file exists</exception>
+        </member>
+        <member name="M:InformationProtection.File.SetLabel(System.String,PSFramework.Parameter.PathNewFileSingleParameter,System.String)">
+            <summary>
+            Apply the specified label
+            </summary>
+            <param name="LabelID">The ID of the label to apply</param>
+            <param name="Destination">The destination path for the labeled file</param>
+            <param name="Justification">The reason for the label change</param>
+            <exception cref="T:System.ArgumentException">When source and destination path are equal, bad things happen.</exception>
+        </member>
+        <member name="M:InformationProtection.File.GetLabel">
+            <summary>
+            Reloads and reads the current label
+            </summary>
+            <returns>The label applied to the current file</returns>
+        </member>
+        <member name="T:InformationProtection.MipHost">
+            <summary>
+            The main session host, owning all MIP operations in the process
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipHost.Context">
+            <summary>
+            The top level MIP Engine Reference
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipHost.Delegate">
+            <summary>
+            The authentication implementation
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipHost.FileProfile">
+            <summary>
+            The main settings for file operations
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipHost.FileEngine">
+            <summary>
+            The engine that executes file operations based on its Profile
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipHost.ProtectionProfile">
+            <summary>
+            The main settings for protection operations (encrypt / decrypt)
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipHost.ProtectionEngine">
+            <summary>
+            The engine that executes protection operations based on its Profile
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipHost.PolicyProfile">
+            <summary>
+            The main settings for policy operations
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipHost.PolicyEngine">
+            <summary>
+            The engine that executes policy operations based on its Profile
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipHost.Authenticate(System.Management.Automation.PSObject,System.Management.Automation.PSObject)">
+            <summary>
+            Setup Auhentication for the MIP SDK.
+            The tokens must have previously been created using Connect-EntraService and the respective services needed.
+            </summary>
+            <param name="AzureRightsManagement">The EntraAuth token to interact with the https://aadrm.com/</param>
+            <param name="MIPSyncService">The EntraAuth token to interact with the https://psor.o365syncservice.com</param>
+        </member>
+        <member name="M:InformationProtection.MipHost.StartFile">
+            <summary>
+            Initializes the File SDK Components
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipHost.StopFile">
+            <summary>
+            Cleans up the File SDK Components
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipHost.StartProtection">
+            <summary>
+            Initializes the Protection SDK Components
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipHost.StopProtection">
+            <summary>
+            Cleans up the Protection SDK Components
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipHost.StartPolicy">
+            <summary>
+            Initializes the Policy SDK Components
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipHost.StopPolicy">
+            <summary>
+            Cleans up the Policy SDK Components
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipHost.Disconnect">
+            <summary>
+            Disconnects and disposes all MIP SDK context data
+            </summary>
+        </member>
+    </members>
+</doc>

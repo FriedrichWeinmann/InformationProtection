@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\..\InformationProtection\bin</OutputPath>
+    <DocumentationFile>..\..\..\InformationProtection\bin\InformationProtection.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Release)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\..\InformationProtection\bin</OutputPath>
+    <DocumentationFile>..\..\..\InformationProtection\bin\InformationProtection.xml</DocumentationFile>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.InformationProtection.File" Version="1.16.149" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="Microsoft.InformationProtection">
+      <HintPath>..\..\..\..\..\..\Users\frweinma\.nuget\packages\microsoft.informationprotection.file\1.16.149\lib\netstandard2.0\Microsoft.InformationProtection.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PSFramework">
+      <HintPath>..\..\..\..\psframework\PSFramework\bin\PSFramework.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System.Management.Automation">
+      <HintPath>..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\System.Management.Automation\v4.0_3.0.0.0__31bf3856ad364e35\System.Management.Automation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

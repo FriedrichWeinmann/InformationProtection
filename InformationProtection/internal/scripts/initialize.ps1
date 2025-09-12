@@ -1,0 +1,1 @@
+﻿Register-PSFParameterClassMapping -ParameterClass Path -TypeName 'InformationProtection.File' -Properties Path

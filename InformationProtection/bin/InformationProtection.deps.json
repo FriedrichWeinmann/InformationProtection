@@ -1,0 +1,63 @@
+{
+  "runtimeTarget": {
+    "name": ".NETStandard,Version=v2.0/",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETStandard,Version=v2.0": {},
+    ".NETStandard,Version=v2.0/": {
+      "InformationProtection/1.0.0": {
+        "dependencies": {
+          "Microsoft.InformationProtection.File": "1.16.149",
+          "NETStandard.Library": "2.0.3"
+        },
+        "runtime": {
+          "InformationProtection.dll": {}
+        }
+      },
+      "Microsoft.InformationProtection.File/1.16.149": {
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.InformationProtection.dll": {
+            "assemblyVersion": "1.16.149.0",
+            "fileVersion": "1.16.149.0"
+          }
+        }
+      },
+      "Microsoft.NETCore.Platforms/1.1.0": {},
+      "NETStandard.Library/2.0.3": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.0"
+        }
+      }
+    }
+  },
+  "libraries": {
+    "InformationProtection/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.InformationProtection.File/1.16.149": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-0YeIrDG8zTo9kzByPS1QVey17uW8eUYE//IV/qmdIh0jPfIllJMj4lL3nzaQh1Eva/rNC9gWtYeNEsFO2MQ8xg==",
+      "path": "microsoft.informationprotection.file/1.16.149",
+      "hashPath": "microsoft.informationprotection.file.1.16.149.nupkg.sha512"
+    },
+    "Microsoft.NETCore.Platforms/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kz0PEW2lhqygehI/d6XsPCQzD7ff7gUJaVGPVETX611eadGsA3A877GdSlU0LRVMCTH/+P3o2iDTak+S08V2+A==",
+      "path": "microsoft.netcore.platforms/1.1.0",
+      "hashPath": "microsoft.netcore.platforms.1.1.0.nupkg.sha512"
+    },
+    "NETStandard.Library/2.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-st47PosZSHrjECdjeIzZQbzivYBJFv6P2nv4cj2ypdI204DO+vZ7l5raGMiX4eXMJ53RfOIg+/s4DHVZ54Nu2A==",
+      "path": "netstandard.library/2.0.3",
+      "hashPath": "netstandard.library.2.0.3.nupkg.sha512"
+    }
+  }
+}

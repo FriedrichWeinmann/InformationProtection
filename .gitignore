@@ -1,0 +1,25 @@
+﻿
+# ignore the settings folder and files for VSCode and PSS
+.vscode/*
+*.psproj
+*TempPoint*
+
+# Ignore staging info from Visual Studio
+library/InformationProtection/.vs/*
+library/InformationProtection/InformationProtection/bin/*
+library/InformationProtection/InformationProtection/obj/*
+
+# ignore PowerShell Studio MetaData
+InformationProtection/InformationProtection.psproj
+InformationProtection/InformationProtection.psproj.bak
+InformationProtection/InformationProtection.psprojs
+InformationProtection/InformationProtection.psproj
+
+# ignore the TestResults
+TestResults/*
+
+# ignore the publishing Directory
+publish/*
+
+# ignore the connection notes
+connect.ps1
