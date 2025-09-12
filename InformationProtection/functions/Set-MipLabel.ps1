@@ -24,6 +24,12 @@
 	.PARAMETER Justification
 		The reason for the label change.
 		This is required for any _changes_ to the label that downgrade its protection status.
+
+	.PARAMETER WhatIf
+		If this switch is enabled, no actions are performed but informational messages will be displayed that explain what would happen if the command were to run.
+	
+	.PARAMETER Confirm
+		If this switch is enabled, you will be prompted for confirmation before executing any operations that change state.
 	
 	.EXAMPLE
 		PS C:\> Set-MipLabel -Path .\test.docx -Label 'Highly Confidential\All Employees'
@@ -35,6 +41,7 @@
 
 		Updates the label on all files in the current folder and subfolders to "Public"
 	#>
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "")]
 	[CmdletBinding(SupportsShouldProcess = $true)]
 	param (
 		[Parameter(Mandatory = $true)]
@@ -59,7 +66,7 @@
 		}
 		if ($labelObject.ID -contains $Label) { $labelObject = $labelObject | Where-Object ID -eq $Label }
 		elseif ($labelObject.FQLA -contains $Label) { $labelObject = $labelObject | Where-Object FQLA -eq $Label }
-		
+
 		if ($labelObject.Count -gt 1) {
 			Stop-PSFFunction -String 'Set-MipLabel.Error.LabelAmbiguous' -StringValues $Label, ($labelObject.FQLA -join ', ') -Cmdlet $PSCmdlet -EnableException $true -Category InvalidArgument
 		}
