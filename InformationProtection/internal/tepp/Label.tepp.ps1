@@ -2,9 +2,9 @@
 	foreach ($label in Get-MipLabel) {
 		if (-not $label.IsActive) { continue }
 
-		$toolTip = $label.FQLA
+		$toolTip = $label.FQLN
 		if ($label.Description) { $toolTip = "$($toolTip) | $($label.Description)"	}
 
-		@{ Text = $label.FQLA; ToolTip = $toolTip }
+		@{ Text = $label.FQLN; ToolTip = $toolTip }
 	}
 } -Global

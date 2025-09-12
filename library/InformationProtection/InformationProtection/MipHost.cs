@@ -59,11 +59,12 @@ namespace InformationProtection
         /// </summary>
         /// <param name="AzureRightsManagement">The EntraAuth token to interact with the https://aadrm.com/</param>
         /// <param name="MIPSyncService">The EntraAuth token to interact with the https://psor.o365syncservice.com</param>
-        public static void Authenticate(PSObject AzureRightsManagement, PSObject MIPSyncService)
+        /// <param name="LogPath">The place where the data nobody reads is written to.</param>
+        public static void Authenticate(PSObject AzureRightsManagement, PSObject MIPSyncService, string LogPath)
         {
             Delegate = new AuthDelegateImplementation(AzureRightsManagement, MIPSyncService);
 
-            MipConfiguration mipConfiguration = new MipConfiguration(Delegate.GetAppInfo(), "mip_data", LogLevel.Trace, false);
+            MipConfiguration mipConfiguration = new MipConfiguration(Delegate.GetAppInfo(), LogPath, LogLevel.Error, false);
 
             Context = MIP.CreateMipContext(mipConfiguration);
 

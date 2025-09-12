@@ -41,9 +41,9 @@
 	process {
 		if ($PSCmdlet.ParameterSetName -eq 'List') {
 			foreach ($label in [InformationProtection.MipHost]::FileEngine.SensitivityLabels) {
-				if ($label.ID -eq $Filter -or $label.Name -like $Filter -or $label.FQLA -like $Filter) { $label }
+				if ($label.ID -eq $Filter -or $label.Name -like $Filter -or $label.FQLN -like $Filter) { $label }
 				foreach ($childLabel in $label.Children) {
-					if ($childLabel.ID -eq $Filter -or $childLabel.Name -like $Filter -or $childLabel.FQLA -like $Filter) { $childLabel }
+					if ($childLabel.ID -eq $Filter -or $childLabel.Name -like $Filter -or $childLabel.FQLN -like $Filter) { $childLabel }
 				}
 			}
 			return

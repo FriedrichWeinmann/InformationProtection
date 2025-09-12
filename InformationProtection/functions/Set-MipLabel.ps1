@@ -65,10 +65,10 @@
 			Stop-PSFFunction -String 'Set-MipLabel.Error.LabelNotFound' -StringValues $Label -Cmdlet $PSCmdlet -EnableException $true -Category InvalidArgument
 		}
 		if ($labelObject.ID -contains $Label) { $labelObject = $labelObject | Where-Object ID -eq $Label }
-		elseif ($labelObject.FQLA -contains $Label) { $labelObject = $labelObject | Where-Object FQLA -eq $Label }
+		elseif ($labelObject.FQLN -contains $Label) { $labelObject = $labelObject | Where-Object FQLN -eq $Label }
 
 		if ($labelObject.Count -gt 1) {
-			Stop-PSFFunction -String 'Set-MipLabel.Error.LabelAmbiguous' -StringValues $Label, ($labelObject.FQLA -join ', ') -Cmdlet $PSCmdlet -EnableException $true -Category InvalidArgument
+			Stop-PSFFunction -String 'Set-MipLabel.Error.LabelAmbiguous' -StringValues $Label, ($labelObject.FQLN -join ', ') -Cmdlet $PSCmdlet -EnableException $true -Category InvalidArgument
 		}
 	}
 	process {

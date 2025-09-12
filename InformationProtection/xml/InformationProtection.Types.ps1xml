@@ -10,7 +10,7 @@ $this.Parent.Name
 				</GetScriptBlock>
 			</ScriptProperty>
 			<ScriptProperty>
-				<Name>FQLA</Name>
+				<Name>FQLN</Name>
 				<GetScriptBlock>
 if (-not $this.Parent) { $this.Name -replace '^\s+|\s+$' }
 else { "$($this.Parent.Name -replace '^\s+|\s+$')\$($this.Name -replace '^\s+|\s+$')" }

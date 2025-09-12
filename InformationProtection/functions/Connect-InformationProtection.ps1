@@ -83,6 +83,11 @@
 		Assert-EntraConnection -Cmdlet $PSCmdlet -Service $services.MIPSyncService
 	}
 	process {
-		[InformationProtection.MipHost]::Authenticate((Get-EntraToken -Service $services.AzureRightsManagement), (Get-EntraToken -Service $services.MIPSyncService))
+		$logPath = Join-Path -Path (Get-PSFPath -Name LocalAppData) -ChildPath 'PowerShell\InformationProtection\logs'
+		[InformationProtection.MipHost]::Authenticate(
+			(Get-EntraToken -Service $services.AzureRightsManagement),
+			(Get-EntraToken -Service $services.MIPSyncService),
+			$logPath
+		)
 	}
 }

@@ -3,7 +3,7 @@
 	RootModule = 'InformationProtection.psm1'
 	
 	# Version number of this module.
-	ModuleVersion = '0.9.0'
+	ModuleVersion = '0.9.2'
 	
 	# ID used to uniquely identify this module
 	GUID = '8513ebee-5a70-4df1-95ee-f7232fc76702'
@@ -75,7 +75,7 @@
 			Tags = @('mip','label')
 			
 			# A URL to the license for this module.
-			# LicenseUri = ''
+			LicenseUri = 'https://github.com/FriedrichWeinmann/InformationProtection/blob/master/LICENSE'
 			
 			# A URL to the main website for this project.
 			ProjectUri = 'https://github.com/FriedrichWeinmann/InformationProtection'
@@ -84,7 +84,7 @@
 			# IconUri = ''
 			
 			# ReleaseNotes of this module
-			# ReleaseNotes = ''
+			ReleaseNotes = 'https://github.com/FriedrichWeinmann/InformationProtection/blob/master/InformationProtection/changelog.md'
 			
 		} # End of PSData hashtable
 		

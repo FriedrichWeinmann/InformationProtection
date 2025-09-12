@@ -202,13 +202,14 @@
             The engine that executes policy operations based on its Profile
             </summary>
         </member>
-        <member name="M:InformationProtection.MipHost.Authenticate(System.Management.Automation.PSObject,System.Management.Automation.PSObject)">
+        <member name="M:InformationProtection.MipHost.Authenticate(System.Management.Automation.PSObject,System.Management.Automation.PSObject,System.String)">
             <summary>
             Setup Auhentication for the MIP SDK.
             The tokens must have previously been created using Connect-EntraService and the respective services needed.
             </summary>
             <param name="AzureRightsManagement">The EntraAuth token to interact with the https://aadrm.com/</param>
             <param name="MIPSyncService">The EntraAuth token to interact with the https://psor.o365syncservice.com</param>
+            <param name="LogPath">The place where the data nobody reads is written to.</param>
         </member>
         <member name="M:InformationProtection.MipHost.StartFile">
             <summary>
