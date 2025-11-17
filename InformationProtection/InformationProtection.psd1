@@ -3,7 +3,7 @@
 	RootModule = 'InformationProtection.psm1'
 	
 	# Version number of this module.
-	ModuleVersion = '0.9.2'
+	ModuleVersion = '0.9.4'
 	
 	# ID used to uniquely identify this module
 	GUID = '8513ebee-5a70-4df1-95ee-f7232fc76702'
@@ -26,7 +26,7 @@
 	# Modules that must be imported into the global environment prior to importing
 	# this module
 	RequiredModules = @(
-		@{ ModuleName='PSFramework'; ModuleVersion='1.13.406' }
+		@{ ModuleName='PSFramework'; ModuleVersion='1.13.416' }
 		@{ ModuleName='EntraAuth'; ModuleVersion='1.8.50' }
 	)
 	
