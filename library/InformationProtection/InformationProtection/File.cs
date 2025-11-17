@@ -116,7 +116,6 @@ namespace InformationProtection
             {
                 labelingOptions.IsDowngradeJustified = true;
                 labelingOptions.JustificationMessage = Justification;
-                labelingOptions.AssignmentMethod = AssignmentMethod.Standard;
             }
 
             Handler.SetLabel(MipHost.FileEngine.GetLabelById(LabelID), labelingOptions, new ProtectionSettings());
