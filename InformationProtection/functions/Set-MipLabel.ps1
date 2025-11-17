@@ -25,6 +25,14 @@
 		The reason for the label change.
 		This is required for any _changes_ to the label that downgrade its protection status.
 
+	.PARAMETER Method
+		Whether to consider the label assignment standard or privileged.
+		+ Standard: Regular assignment as a user
+		+ Privileged: Assignment as an administrative action (e.g. through policies)
+		This does not reflect actual protection levels - everybody may pick whatever seems appropriate,
+		but a file previously labeled under "Privileged" cannot be relabeled as Standard.
+		Defaults to: Privileged (presumably, regular users are not going to be running PowerShell).
+
 	.PARAMETER WhatIf
 		If this switch is enabled, no actions are performed but informational messages will be displayed that explain what would happen if the command were to run.
 	
@@ -54,7 +62,10 @@
 		$Path,
 
 		[string]
-		$Justification
+		$Justification,
+
+		[Microsoft.InformationProtection.AssignmentMethod]
+		$Method = 'Privileged'
 	)
 	begin {
 		Assert-MIPConnection -Cmdlet $PSCmdlet
@@ -81,7 +92,7 @@
 			$tempOldPath = Join-Path -Path $directory -ChildPath $tempOldName
 			Invoke-PSFProtectedCommand -ActionString 'Set-MipLabel.ApplyLabel' -ActionStringValues $labelObject.Name, $labelObject.ID -Target $file.Path -ScriptBlock {
 				# Step 1: Label & New File
-				$file.SetLabel($labelObject.ID, $tempNewPath, $Justification)
+				$file.SetLabel($labelObject.ID, $tempNewPath, $Justification, $Method)
 
 				# Step 2: Rename old file to temp name
 				try { Rename-Item -LiteralPath $file.Path -NewName $tempOldName -Force -ErrorAction Stop }

@@ -1,6 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-16"?>
 <Configuration>
     <ViewDefinitions>
+        <!-- Microsoft.InformationProtection.ContentLabel -->
+        <View>
+            <Name>Microsoft.InformationProtection.ContentLabel</Name>
+            <ViewSelectedBy>
+                <TypeName>Microsoft.InformationProtection.ContentLabel</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <AutoSize/>
+                <TableHeaders>
+                    <TableColumnHeader>
+                        <Label>Label</Label>
+                    </TableColumnHeader>
+                    <TableColumnHeader/>
+                    <TableColumnHeader/>
+                    <TableColumnHeader/>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem>
+                                <ScriptBlock>
+ $_.Label.FQLN 
+                                </ScriptBlock>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>CreationTime</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>AssignmentMethod</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>IsProtectionAppliedFromLabel</PropertyName>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+
         <!-- InformationProtection.File -->
         <View>
             <Name>InformationProtection.File</Name>

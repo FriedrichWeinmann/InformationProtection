@@ -103,12 +103,15 @@ namespace InformationProtection
         /// <param name="Destination">The destination path for the labeled file</param>
         /// <param name="Justification">The reason for the label change</param>
         /// <exception cref="ArgumentException">When source and destination path are equal, bad things happen.</exception>
-        public void SetLabel(string LabelID, PathNewFileSingleParameter Destination, string Justification)
+        /// <param name="Method">Whether this is an administrative action (Privileged) or regular user action (Standard)</param>
+        public void SetLabel(string LabelID, PathNewFileSingleParameter Destination, string Justification, AssignmentMethod Method)
         {
             if (Destination.ToString().ToLower() == Path.ToLower())
                 throw new ArgumentException("Source and Destination cannot be the same!", "Destination");
 
             LabelingOptions labelingOptions = new LabelingOptions();
+            labelingOptions.AssignmentMethod = Method;
+
             if (!String.IsNullOrEmpty(Justification))
             {
                 labelingOptions.IsDowngradeJustified = true;
