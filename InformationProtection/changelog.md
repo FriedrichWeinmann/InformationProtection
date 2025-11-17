@@ -1,5 +1,10 @@
 ﻿# Changelog
 
+## ???
+
++ Upd: Set-MipLabel - added "Method" parameter, to enable Privileged labelling
++ Upd: Get-MipLabel - improved output display result, when showing the labeling status of a file
+
 ## 0.9.2 (2025-09-12)
 
 + Upd: Label Object - Renamed "FQLA" property to "FQLN"

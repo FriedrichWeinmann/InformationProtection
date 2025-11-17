@@ -142,7 +142,7 @@
             </summary>
             <exception cref="T:System.InvalidOperationException">Can only be called if connected, has a path and the file exists</exception>
         </member>
-        <member name="M:InformationProtection.File.SetLabel(System.String,PSFramework.Parameter.PathNewFileSingleParameter,System.String)">
+        <member name="M:InformationProtection.File.SetLabel(System.String,PSFramework.Parameter.PathNewFileSingleParameter,System.String,Microsoft.InformationProtection.AssignmentMethod)">
             <summary>
             Apply the specified label
             </summary>
@@ -150,6 +150,7 @@
             <param name="Destination">The destination path for the labeled file</param>
             <param name="Justification">The reason for the label change</param>
             <exception cref="T:System.ArgumentException">When source and destination path are equal, bad things happen.</exception>
+            <param name="Method">Whether this is an administrative action (Privileged) or regular user action (Standard)</param>
         </member>
         <member name="M:InformationProtection.File.GetLabel">
             <summary>
