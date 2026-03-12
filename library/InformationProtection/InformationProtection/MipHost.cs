@@ -62,9 +62,11 @@ namespace InformationProtection
         /// <param name="LogPath">The place where the data nobody reads is written to.</param>
         public static void Authenticate(PSObject AzureRightsManagement, PSObject MIPSyncService, string LogPath)
         {
+            // Do a clean disconnect first - has no effect if not connected
+            Disconnect();
             Delegate = new AuthDelegateImplementation(AzureRightsManagement, MIPSyncService);
 
-            MipConfiguration mipConfiguration = new MipConfiguration(Delegate.GetAppInfo(), LogPath, LogLevel.Error, false);
+            MipConfiguration mipConfiguration = new MipConfiguration(Delegate.GetAppInfo(), LogPath, LogLevel.Error, false, CacheStorageType.OnDiskEncrypted);
 
             Context = MIP.CreateMipContext(mipConfiguration);
 
@@ -101,8 +103,8 @@ namespace InformationProtection
             if (FileProfile == null) return;
 
             Task.Run(async () => await FileProfile.DeleteEngineAsync(FileEngine.Settings.EngineId));
-            FileEngine.Dispose();
-            FileProfile.Dispose();
+            // FileEngine.Dispose();
+            // FileProfile.Dispose();
             FileEngine = null;
             FileProfile = null;
         }
@@ -134,8 +136,8 @@ namespace InformationProtection
             if (ProtectionProfile == null) return;
 
             Task.Run(async () => await ProtectionProfile.DeleteEngineAsync(ProtectionEngine.Settings.EngineId));
-            ProtectionEngine.Dispose();
-            ProtectionProfile.Dispose();
+            // ProtectionEngine.Dispose();
+            // ProtectionProfile.Dispose();
             ProtectionEngine = null;
             ProtectionProfile = null;
         }
@@ -167,8 +169,8 @@ namespace InformationProtection
             if (PolicyProfile == null) return;
 
             Task.Run(async () => await PolicyProfile.DeleteEngineAsync(PolicyEngine.Settings.Id));
-            PolicyEngine.Dispose();
-            PolicyProfile.Dispose();
+            // PolicyEngine.Dispose();
+            // PolicyProfile.Dispose();
             PolicyEngine = null;
             PolicyProfile = null;
         }
@@ -182,7 +184,8 @@ namespace InformationProtection
             StopProtection();
             StopPolicy();
 
-            Context.ShutDown();
+            if (Context != null)
+                Context.ShutDown();
 
             Context = null;
             Delegate = null;

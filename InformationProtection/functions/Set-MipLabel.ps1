@@ -33,6 +33,11 @@
 		but a file previously labeled under "Privileged" cannot be relabeled as Standard.
 		Defaults to: Privileged (presumably, regular users are not going to be running PowerShell).
 
+	.PARAMETER Session
+		MIP Session to use for the operation.
+		Overrides the use of the default session and would be used in situations when relabeling files from one tenant to another.
+		Use "New-MipSession" to create a standalone session object.
+
 	.PARAMETER WhatIf
 		If this switch is enabled, no actions are performed but informational messages will be displayed that explain what would happen if the command were to run.
 	
@@ -65,13 +70,19 @@
 		$Justification,
 
 		[Microsoft.InformationProtection.AssignmentMethod]
-		$Method = 'Privileged'
+		$Method = 'Privileged',
+
+		[InformationProtection.MipSession]
+		$Session
 	)
 	begin {
-		Assert-MIPConnection -Cmdlet $PSCmdlet
+		Assert-MIPConnection -Cmdlet $PSCmdlet -Session $Session
+		$sessionToUse = $script:_session
+		if ($Session.Context) { $sessionToUse = $Session }
+
 		$killIt = $ErrorActionPreference -eq 'Stop'
 
-		$labelObject = Get-MipLabel -Filter $Label
+		$labelObject = Get-MipLabel -Filter $Label -Session $sessionToUse
 		if (-not $labelObject) {
 			Stop-PSFFunction -String 'Set-MipLabel.Error.LabelNotFound' -StringValues $Label -Cmdlet $PSCmdlet -EnableException $true -Category InvalidArgument
 		}
@@ -84,7 +95,7 @@
 	}
 	process {
 		foreach ($filePath in $Path) {
-			$file = [InformationProtection.File]$filePath
+			$file = [InformationProtection.File]::new($filePath, $sessionToUse)
 			$directory = Split-Path -Path $file.Path
 			$fileName = Split-Path -Path $file.Path -Leaf
 			$tempNewPath = Join-Path -Path $directory -ChildPath ([Guid]::NewGuid())

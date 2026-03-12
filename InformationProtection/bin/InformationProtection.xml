@@ -123,18 +123,20 @@
             ID of the applied label (if any)
             </summary>
         </member>
-        <member name="M:InformationProtection.File.#ctor(PSFramework.Parameter.PathFileSingleParameter)">
+        <member name="M:InformationProtection.File.#ctor(PSFramework.Parameter.PathFileSingleParameter,InformationProtection.MipSession)">
             <summary>
             Create a new file object from a path
             </summary>
             <param name="Path">The path to the file. Can be PowerShell-relative, will be resolved.</param>
+            <param name="Session">The MIP Session used to perform labeling operations.</param>
             <exception cref="T:System.InvalidOperationException">Without connection, nothing can happen.</exception>
         </member>
-        <member name="M:InformationProtection.File.#ctor(System.Object)">
+        <member name="M:InformationProtection.File.#ctor(System.Object,InformationProtection.MipSession)">
             <summary>
             Create a new file object from a path.
             </summary>
             <param name="Path">The path to the file. Can be PowerShell-relative, will be resolved.</param>
+            <param name="Session">The MIP Session used to perform labeling operations.</param>
         </member>
         <member name="M:InformationProtection.File.RefreshState">
             <summary>
@@ -243,6 +245,95 @@
             </summary>
         </member>
         <member name="M:InformationProtection.MipHost.Disconnect">
+            <summary>
+            Disconnects and disposes all MIP SDK context data
+            </summary>
+        </member>
+        <member name="T:InformationProtection.MipSession">
+            <summary>
+            A single active MIP Session, containing all the information needed to execute MIP operations
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipSession.Context">
+            <summary>
+            The top level MIP Engine Reference
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipSession.Delegate">
+            <summary>
+            The authentication implementation
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipSession.FileProfile">
+            <summary>
+            The main settings for file operations
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipSession.FileEngine">
+            <summary>
+            The engine that executes file operations based on its Profile
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipSession.ProtectionProfile">
+            <summary>
+            The main settings for protection operations (encrypt / decrypt)
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipSession.ProtectionEngine">
+            <summary>
+            The engine that executes protection operations based on its Profile
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipSession.PolicyProfile">
+            <summary>
+            The main settings for policy operations
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipSession.PolicyEngine">
+            <summary>
+            The engine that executes policy operations based on its Profile
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipSession.Authenticate(System.Management.Automation.PSObject,System.Management.Automation.PSObject,System.String)">
+            <summary>
+            Setup Auhentication for the MIP SDK.
+            The tokens must have previously been created using Connect-EntraService and the respective services needed.
+            </summary>
+            <param name="AzureRightsManagement">The EntraAuth token to interact with the https://aadrm.com/</param>
+            <param name="MIPSyncService">The EntraAuth token to interact with the https://psor.o365syncservice.com</param>
+            <param name="LogPath">The place where the data nobody reads is written to.</param>
+        </member>
+        <member name="M:InformationProtection.MipSession.StartFile">
+            <summary>
+            Initializes the File SDK Components
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipSession.StopFile">
+            <summary>
+            Cleans up the File SDK Components
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipSession.StartProtection">
+            <summary>
+            Initializes the Protection SDK Components
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipSession.StopProtection">
+            <summary>
+            Cleans up the Protection SDK Components
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipSession.StartPolicy">
+            <summary>
+            Initializes the Policy SDK Components
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipSession.StopPolicy">
+            <summary>
+            Cleans up the Policy SDK Components
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipSession.Disconnect">
             <summary>
             Disconnects and disposes all MIP SDK context data
             </summary>

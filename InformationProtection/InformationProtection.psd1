@@ -3,7 +3,7 @@
 	RootModule = 'InformationProtection.psm1'
 	
 	# Version number of this module.
-	ModuleVersion = '0.9.4'
+	ModuleVersion = '1.0.11'
 	
 	# ID used to uniquely identify this module
 	GUID = '8513ebee-5a70-4df1-95ee-f7232fc76702'
@@ -26,14 +26,14 @@
 	# Modules that must be imported into the global environment prior to importing
 	# this module
 	RequiredModules = @(
-		@{ ModuleName='PSFramework'; ModuleVersion='1.13.416' }
-		@{ ModuleName='EntraAuth'; ModuleVersion='1.8.50' }
+		@{ ModuleName='PSFramework'; ModuleVersion='1.13.426' }
+		@{ ModuleName='EntraAuth'; ModuleVersion='1.8.52' }
 	)
 	
 	# Assemblies that must be loaded prior to importing this module
 	RequiredAssemblies = @(
-		'bin\Microsoft.InformationProtection.dll'
-		'bin\InformationProtection.dll'
+		#'bin\Microsoft.InformationProtection.dll'
+		#'bin\InformationProtection.dll'
 	)
 	
 	# Type files (.ps1xml) to be loaded when importing this module
@@ -45,8 +45,11 @@
 	# Functions to export from this module
 	FunctionsToExport = @(
 		'Connect-InformationProtection'
+		'Disconnect-InformationProtection'
 		'Get-MipFile'
 		'Get-MipLabel'
+		'Import-MipSession'
+		'New-MipSession'
 		'Set-MipLabel'
 	)
 	

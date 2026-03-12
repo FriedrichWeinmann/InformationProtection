@@ -11,6 +11,11 @@
 	.PARAMETER Cmdlet
 		The $PSCmdlet variable of the caller.
 		Used to create the error in the context of the caller.
+
+	.PARAMETER Session
+		MIP Session to use for the operation.
+		Overrides the use of the default session and would be used in situations when relabeling files from one tenant to another.
+		Use "New-MipSession" to create a standalone session object.
 	
 	.EXAMPLE
 		PS C:\> Assert-MIPConnection -Cmdlet $PSCmdlet
@@ -20,10 +25,15 @@
 	[CmdletBinding()]
 	param (
 		[Parameter(Mandatory = $true)]
-		$Cmdlet
+		$Cmdlet,
+
+		[AllowNull()]
+		[InformationProtection.MipSession]
+		$Session
 	)
 	process {
-		if ([InformationProtection.MipHost]::Context) { return }
+		if ($Session -and $Session.Context) { return }
+		if ($script:_session.Context) { return }
 
 		$errorRecord = [System.Management.Automation.ErrorRecord]::new(
 			[System.InvalidOperationException]::new("Not yet connected! Use Connect-InformationProtection to connect first!"),

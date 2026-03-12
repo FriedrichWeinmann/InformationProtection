@@ -48,6 +48,9 @@
 	.PARAMETER TenantID
 		The tenant ID of the Entra application to use to authenticate.
 		Defaults to: "organizations" (Which means the tenant, the selected account belongs to)
+
+	.PARAMETER PassThru
+		Returns the MIP session as an object, on top of storing it as the module's default session.
 	
 	.EXAMPLE
 		PS C:\> Connect-InformationProtection
@@ -60,6 +63,7 @@
 		Authenticate while creating new EntraAuth sessions for the services "AzureRightsManagement" and "MIPSyncService".
 		This will only use the Authorization Code delegate authentication flow.
 	#>
+	[OutputType([InformationProtection.MipSession])]
 	[CmdletBinding()]
 	param (
 		[hashtable]
@@ -69,7 +73,10 @@
 		$ClientID,
 
 		[string]
-		$TenantID = 'organizations'
+		$TenantID = 'organizations',
+
+		[switch]
+		$PassThru
 	)
 	begin {
 		$services = $script:_serviceSelector.GetServiceMap($ServiceMap)
@@ -83,11 +90,18 @@
 		Assert-EntraConnection -Cmdlet $PSCmdlet -Service $services.MIPSyncService
 	}
 	process {
-		$logPath = Join-Path -Path (Get-PSFPath -Name LocalAppData) -ChildPath 'PowerShell\InformationProtection\logs'
-		[InformationProtection.MipHost]::Authenticate(
+		$logPath = Join-Path -Path (Get-PSFPath -Name LocalAppData) -ChildPath "PowerShell\InformationProtection\logs\$([guid]::NewGuid())"
+		$session = [InformationProtection.MipSession]::new()
+		$session.Authenticate(
 			(Get-EntraToken -Service $services.AzureRightsManagement),
 			(Get-EntraToken -Service $services.MIPSyncService),
 			$logPath
 		)
+		if ($script:_session) {
+			$script:_session.Disconnect()
+		}
+		$script:_session = $session
+
+		if ($PassThru) { $session }
 	}
 }
