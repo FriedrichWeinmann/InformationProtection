@@ -154,6 +154,14 @@
             <exception cref="T:System.ArgumentException">When source and destination path are equal, bad things happen.</exception>
             <param name="Method">Whether this is an administrative action (Privileged) or regular user action (Standard)</param>
         </member>
+        <member name="M:InformationProtection.File.RemoveLabel(PSFramework.Parameter.PathNewFileSingleParameter,System.String,Microsoft.InformationProtection.AssignmentMethod)">
+            <summary>
+            Removes the assigned label
+            </summary>
+            <param name="Destination">The destination path for the labeled file</param>
+            <param name="Justification">The reason for the label change</param>
+            <param name="Method">Whether this is an administrative action (Privileged) or regular user action (Standard)</param>
+        </member>
         <member name="M:InformationProtection.File.GetLabel">
             <summary>
             Reloads and reads the current label
@@ -252,6 +260,16 @@
         <member name="T:InformationProtection.MipSession">
             <summary>
             A single active MIP Session, containing all the information needed to execute MIP operations
+            </summary>
+        </member>
+        <member name="P:InformationProtection.MipSession.Name">
+            <summary>
+            Name of the account used for authentication
+            </summary>
+        </member>
+        <member name="P:InformationProtection.MipSession.Email">
+            <summary>
+            Email of the account used for authentication
             </summary>
         </member>
         <member name="F:InformationProtection.MipSession.Context">

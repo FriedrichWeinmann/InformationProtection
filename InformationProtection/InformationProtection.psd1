@@ -50,6 +50,7 @@
 		'Get-MipLabel'
 		'Import-MipSession'
 		'New-MipSession'
+		'Remove-MipLabel'
 		'Set-MipLabel'
 	)
 	

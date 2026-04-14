@@ -128,6 +128,26 @@ namespace InformationProtection
         }
 
         /// <summary>
+        /// Removes the assigned label
+        /// </summary>
+        /// <param name="Destination">The destination path for the labeled file</param>
+        /// <param name="Justification">The reason for the label change</param>
+        /// <param name="Method">Whether this is an administrative action (Privileged) or regular user action (Standard)</param>
+        public void RemoveLabel(PathNewFileSingleParameter Destination, string Justification, AssignmentMethod Method)
+        {
+            LabelingOptions labelingOptions = new LabelingOptions();
+            labelingOptions.AssignmentMethod = Method;
+
+            if (!String.IsNullOrEmpty(Justification))
+            {
+                labelingOptions.IsDowngradeJustified = true;
+                labelingOptions.JustificationMessage = Justification;
+            }
+            Handler.DeleteLabel(labelingOptions);
+            var result = Task.Run(async () => await Handler.CommitAsync(Destination)).Result;
+        }
+
+        /// <summary>
         /// Reloads and reads the current label
         /// </summary>
         /// <returns>The label applied to the current file</returns>

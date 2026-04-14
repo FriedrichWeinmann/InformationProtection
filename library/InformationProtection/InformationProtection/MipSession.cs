@@ -16,6 +16,26 @@ namespace InformationProtection
     public class MipSession
     {
         /// <summary>
+        /// Name of the account used for authentication
+        /// </summary>
+        public string Name { get => Delegate?.GetPrincipal(); }
+
+        /// <summary>
+        /// Email of the account used for authentication
+        /// </summary>
+        public string Email
+        {
+            get
+            {
+                if (!String.IsNullOrEmpty(_Email))
+                    return _Email;
+                return Delegate?.GetPrincipal();
+            }
+            set { _Email = value; }
+        }
+        private string _Email;
+
+        /// <summary>
         /// The top level MIP Engine Reference
         /// </summary>
         public MipContext Context;
@@ -91,7 +111,7 @@ namespace InformationProtection
             FileProfileSettings profileSettings = new FileProfileSettings(Context, CacheStorageType.InMemory, new ConsentDelegateImplementation());
             FileProfile = Task.Run(async () => await MIP.LoadFileProfileAsync(profileSettings)).Result;
             FileEngineSettings engineSettings = new FileEngineSettings(Delegate.GetPrincipal(), Delegate, "", "en-US");
-            engineSettings.Identity = new Identity(Delegate.GetPrincipal());
+            engineSettings.Identity = new Identity(Email, Name);
             engineSettings.LoadSensitivityTypes = true;
             FileEngine = Task.Run(async () => await FileProfile.AddEngineAsync(engineSettings)).Result;
         }
@@ -125,7 +145,7 @@ namespace InformationProtection
             ProtectionProfileSettings profileSettings = new ProtectionProfileSettings(Context, CacheStorageType.InMemory, new ConsentDelegateImplementation());
             ProtectionProfile = MIP.LoadProtectionProfile(profileSettings);
             ProtectionEngineSettings engineSettings = new ProtectionEngineSettings(Delegate.GetPrincipal(), Delegate, "", "en-US");
-            engineSettings.Identity = new Identity(Delegate.GetPrincipal());
+            engineSettings.Identity = new Identity(Email, Name);
             ProtectionEngine = ProtectionProfile.AddEngine(engineSettings);
         }
 
@@ -158,7 +178,7 @@ namespace InformationProtection
             PolicyProfileSettings profileSettings = new PolicyProfileSettings(Context, CacheStorageType.InMemory);
             PolicyProfile = Task.Run(async () => await MIP.LoadPolicyProfileAsync(profileSettings)).Result;
             PolicyEngineSettings engineSettings = new PolicyEngineSettings(Delegate.GetPrincipal(), Delegate, "", "en-US");
-            engineSettings.Identity = new Identity(Delegate.GetPrincipal());
+            engineSettings.Identity = new Identity(Email, Name);
             PolicyEngine = PolicyProfile.AddEngine(engineSettings);
         }
 

@@ -49,6 +49,10 @@
 		The tenant ID of the Entra application to use to authenticate.
 		Defaults to: "organizations" (Which means the tenant, the selected account belongs to)
 
+	.PARAMETER Email
+		Email address to register on the session object.
+		The protection api requires this to be specified when authenticating as an application, rather than a user.
+
 	.PARAMETER PassThru
 		Returns the MIP session as an object, on top of storing it as the module's default session.
 	
@@ -75,6 +79,9 @@
 		[string]
 		$TenantID = 'organizations',
 
+		[string]
+		$Email,
+
 		[switch]
 		$PassThru
 	)
@@ -92,6 +99,7 @@
 	process {
 		$logPath = Join-Path -Path (Get-PSFPath -Name LocalAppData) -ChildPath "PowerShell\InformationProtection\logs\$([guid]::NewGuid())"
 		$session = [InformationProtection.MipSession]::new()
+		if ($Email) { $session.Email = $Email }
 		$session.Authenticate(
 			(Get-EntraToken -Service $services.AzureRightsManagement),
 			(Get-EntraToken -Service $services.MIPSyncService),

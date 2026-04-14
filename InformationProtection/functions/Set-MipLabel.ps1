@@ -38,6 +38,11 @@
 		Overrides the use of the default session and would be used in situations when relabeling files from one tenant to another.
 		Use "New-MipSession" to create a standalone session object.
 
+	.PARAMETER Force
+		Forcibly apply the label, even if the file already has the correct label.
+		Will in most cases break the file.
+		Necessary when migrating to the same default builtin label in another tenant.
+
 	.PARAMETER WhatIf
 		If this switch is enabled, no actions are performed but informational messages will be displayed that explain what would happen if the command were to run.
 	
@@ -73,7 +78,10 @@
 		$Method = 'Privileged',
 
 		[InformationProtection.MipSession]
-		$Session
+		$Session,
+
+		[switch]
+		$Force
 	)
 	begin {
 		Assert-MIPConnection -Cmdlet $PSCmdlet -Session $Session
@@ -96,8 +104,13 @@
 	process {
 		foreach ($filePath in $Path) {
 			$file = [InformationProtection.File]::new($filePath, $sessionToUse)
+			if ($file.LabelID -eq $labelObject.Id -and -not $Force) {
+				Write-PSFMessage -Level Verbose -String 'Set-MipLabel.Already.Labeled' -StringValues $filePath, $labelObject.Name, $labelObject.ID
+				continue
+			}
 			$directory = Split-Path -Path $file.Path
 			$fileName = Split-Path -Path $file.Path -Leaf
+			$fileNewName = $fileName -replace '\.txt$', '.ptxt'
 			$tempNewPath = Join-Path -Path $directory -ChildPath ([Guid]::NewGuid())
 			$tempOldName = [Guid]::NewGuid().ToString()
 			$tempOldPath = Join-Path -Path $directory -ChildPath $tempOldName
@@ -113,7 +126,7 @@
 				}
 
 				# Step 3: Rename labeled file to original name
-				try { Rename-Item -LiteralPath $tempNewPath -NewName $fileName -Force -ErrorAction Stop }
+				try { Rename-Item -LiteralPath $tempNewPath -NewName $fileNewName -Force -ErrorAction Stop }
 				catch {
 					# Rollback and delete new file
 					Rename-Item -LiteralPath $tempOldPath -NewName $fileName -Force
