@@ -22,6 +22,8 @@
 		Connect-EntraService -TenantID $tenantID -ClientID $clientID -Service AzureRightsManagement
 		Connect-EntraService -TenantID $tenantID -ClientID $clientID -Service MIPSyncService -UseRefreshToken
 
+		Note: This example assumes you previously already imported the InformationProtection module!
+
 		Example 2:
 
 		Connect-EntraService -TenantID $tenantID -ClientID $clientID -Service AzureRightsManagement, MIPSyncService -Certificate $cert
@@ -127,7 +129,8 @@
 		$session.Authenticate(
 			(Get-EntraToken -Service $services.AzureRightsManagement),
 			(Get-EntraToken -Service $services.MIPSyncService),
-			$logPath
+			$logPath,
+			$LogLevel
 		)
 		if ($script:_session) {
 			$script:_session.Disconnect()

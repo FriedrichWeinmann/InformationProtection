@@ -74,7 +74,7 @@
 			}
 			$directory = Split-Path -Path $file.Path
 			$fileName = Split-Path -Path $file.Path -Leaf
-			$fileNewName = $fileName -replace '\.ptxt$', '.txt'
+			$fileNewName = $file.FileNameUnprotected
 			$tempNewPath = Join-Path -Path $directory -ChildPath ([Guid]::NewGuid())
 			$tempOldName = [Guid]::NewGuid().ToString()
 			$tempOldPath = Join-Path -Path $directory -ChildPath $tempOldName

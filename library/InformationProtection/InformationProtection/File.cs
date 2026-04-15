@@ -2,7 +2,8 @@
 using Microsoft.InformationProtection.File;
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PSFramework.Parameter;
@@ -23,6 +24,11 @@ namespace InformationProtection
         /// The full path of the file
         /// </summary>
         public string Path { get; private set; }
+
+        /// <summary>
+        /// The File Information Object representing the file in the filesystem
+        /// </summary>
+        public FileInfo Info { get; private set; }
 
         /// <summary>
         /// The file handler, used to execute logic with
@@ -48,6 +54,51 @@ namespace InformationProtection
         /// ID of the applied label (if any)
         /// </summary>
         public string LabelID { get; private set; }
+
+        #region Capability Metadata
+        /// <summary>
+        /// Whether the file can be labeled without protection
+        /// </summary>
+        public bool CanBeUnprotected { get => MipHost.FileTypesIntegrated.Contains(Info.Extension, StringComparer.OrdinalIgnoreCase); }
+
+        /// <summary>
+        /// What should the protected name of the file look like
+        /// </summary>
+        public string FileNameProtected
+        {
+            get
+            {
+                if (MipHost.FileTypesIntegrated.Contains(Info.Extension, StringComparer.OrdinalIgnoreCase))
+                    return Info.Name;
+                if (MipHost.FileTypesLimitedTo.ContainsKey(Info.Extension))
+                    return Info.Name;
+                if (MipHost.FileTypesLimitedFrom.ContainsKey(Info.Extension))
+                    return $"{Info.Name.Substring(0, Info.Name.Length - Info.Extension.Length)}{MipHost.FileTypesLimitedFrom[Info.Extension]}";
+                if (String.Equals(Info.Extension, ".pfile", StringComparison.OrdinalIgnoreCase))
+                    return Info.Name;
+                return $"{Info.Name}.pfile";
+            }
+        }
+
+        /// <summary>
+        /// What should the protected name of the file look like
+        /// </summary>
+        public string FileNameUnprotected
+        {
+            get
+            {
+                if (MipHost.FileTypesIntegrated.Contains(Info.Extension, StringComparer.OrdinalIgnoreCase))
+                    return Info.Name;
+                if (MipHost.FileTypesLimitedFrom.ContainsKey(Info.Extension))
+                    return Info.Name;
+                if (MipHost.FileTypesLimitedTo.ContainsKey(Info.Extension))
+                    return $"{Info.Name.Substring(0, Info.Name.Length - Info.Extension.Length)}{MipHost.FileTypesLimitedTo[Info.Extension]}";
+                if (String.Equals(Info.Extension, ".pfile", StringComparison.OrdinalIgnoreCase))
+                    return Info.Name.Substring(0, Info.Name.Length - 6);
+                return Info.Name;
+            }
+        }
+        #endregion Capability Metadata
 
         private MipSession _Session;
 
@@ -93,6 +144,7 @@ namespace InformationProtection
 
             Handler = Task.Run(async () => await _Session.FileEngine.CreateFileHandlerAsync(Path, Path, true)).Result;
             Label = Handler.Label;
+            Info = new FileInfo(Path);
             if (Label == null)
                 return;
             

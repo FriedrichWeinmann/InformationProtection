@@ -110,7 +110,8 @@
 			}
 			$directory = Split-Path -Path $file.Path
 			$fileName = Split-Path -Path $file.Path -Leaf
-			$fileNewName = $fileName -replace '\.txt$', '.ptxt'
+			# Always pick the protected name, because the only files that can accept labels without protection don't switch extensions between protected and unprotected
+			$fileNewName = $file.FileNameProtected
 			$tempNewPath = Join-Path -Path $directory -ChildPath ([Guid]::NewGuid())
 			$tempOldName = [Guid]::NewGuid().ToString()
 			$tempOldPath = Join-Path -Path $directory -ChildPath $tempOldName

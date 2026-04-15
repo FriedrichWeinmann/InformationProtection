@@ -55,6 +55,12 @@ Connect-EntraService -TenantID $tenantID -ClientID $clientID -Service AzureRight
 Connect-EntraService -TenantID $tenantID -ClientID $clientID -Service MIPSyncService -UseRefreshToken
 ```
 
+Note: This example assumes you previously already imported the InformationProtection module, e.g. via:
+
+```powershell
+Import-Module InformationProtection
+```
+
 #### Create new sessions
 
 You can establish new EntraAuth sessions as part of this command, by specifying the ClientID of the Entra Application to use:

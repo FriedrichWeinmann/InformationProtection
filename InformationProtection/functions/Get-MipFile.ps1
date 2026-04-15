@@ -43,7 +43,16 @@
 	}
 	process {
 		foreach ($filePath in $Path) {
-			[InformationProtection.File]::new($filePath, $sessionToUse)
+			try { [InformationProtection.File]::new($filePath, $sessionToUse) }
+			catch {
+				# Better message if possible
+				if ($_.Exception.GetBaseException() -is [Microsoft.InformationProtection.Exceptions.BadInputException]) {
+					Write-Error -Message $_.Exception.GetBaseException().Message -TargetObject $filePath
+				}
+				else {
+					Write-Error -Message $_ -TargetObject $filePath
+				}
+			}
 		}
 	}
 }

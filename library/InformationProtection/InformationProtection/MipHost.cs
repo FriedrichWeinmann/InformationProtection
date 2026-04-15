@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Management.Automation;
 using System.Threading.Tasks;
 using Microsoft.InformationProtection;
@@ -13,6 +14,85 @@ namespace InformationProtection
     /// </summary>
     public static class MipHost
     {
+        /// <summary>
+        /// List of file extensions that natively support all labeling without changing the name
+        /// </summary>
+        /// <link>https://learn.microsoft.com/en-us/information-protection/develop/concept-supported-filetypes</link>
+        public static string[] FileTypesIntegrated = new string[] {
+            ".doc",
+            ".docm",
+            ".docx",
+            ".dot",
+            ".dotm",
+            ".dotx",
+            ".potm",
+            ".potx",
+            ".pps",
+            ".ppsm",
+            ".ppsx",
+            ".ppt",
+            ".pptm",
+            ".pptx",
+            ".vsdm",
+            ".vsdx",
+            ".vssm",
+            ".vssx",
+            ".vstm",
+            ".vstx",
+            ".xla",
+            ".xlam",
+            ".xls",
+            ".xlsb",
+            ".xlt",
+            ".xlsm",
+            ".xlsx",
+            ".xltm",
+            ".xltx",
+            ".xps"
+        };
+
+        /// <summary>
+        /// File types that can be protected, but cannot have a label without protection. Mapped from their unprotected extension to their protected one.
+        /// </summary>
+        /// <link>https://learn.microsoft.com/en-us/information-protection/develop/concept-supported-filetypes</link>
+        public static Dictionary<string, string> FileTypesLimitedFrom = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { ".txt", ".ptxt" },
+            { ".xml", ".pxml" },
+            { ".jpg", ".pjpg" },
+            { ".jpeg", ".pjpeg" },
+            { ".pdf", ".ppdf" },
+            { ".png", ".ppng" },
+            { ".tif", ".ptif" },
+            { ".tiff", ".ptiff" },
+            { ".bmp", ".pbmp" },
+            { ".gif", ".pgif" },
+            { ".jpe", ".pjpe" },
+            { ".jfif", ".pjfif" }
+        };
+
+        /// <summary>
+        /// File types that can be protected, but cannot have a label without protection. Mapped from their protected extension to their unprotected one.
+        /// </summary>
+        /// <link>https://learn.microsoft.com/en-us/information-protection/develop/concept-supported-filetypes</link>
+        public static Dictionary<string, string> FileTypesLimitedTo = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { ".ptxt", ".txt" },
+            { ".pxml", ".xml" },
+            { ".pjpg", ".jpg" },
+            { ".pjpeg", ".jpeg" },
+            { ".ppdf", ".pdf" },
+            { ".ppng", ".png" },
+            { ".ptif", ".tif" },
+            { ".ptiff", ".tiff" },
+            { ".pbmp", ".bmp" },
+            { ".pgif", ".gif" },
+            { ".pjpe", ".jpe" },
+            { ".pjfif", ".jfif" }
+        };
+
+
+
         /// <summary>
         /// The top level MIP Engine Reference
         /// </summary>

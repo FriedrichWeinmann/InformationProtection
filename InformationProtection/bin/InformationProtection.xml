@@ -98,6 +98,11 @@
             The full path of the file
             </summary>
         </member>
+        <member name="P:InformationProtection.File.Info">
+            <summary>
+            The File Information Object representing the file in the filesystem
+            </summary>
+        </member>
         <member name="P:InformationProtection.File.Handler">
             <summary>
             The file handler, used to execute logic with
@@ -121,6 +126,21 @@
         <member name="P:InformationProtection.File.LabelID">
             <summary>
             ID of the applied label (if any)
+            </summary>
+        </member>
+        <member name="P:InformationProtection.File.CanBeUnprotected">
+            <summary>
+            Whether the file can be labeled without protection
+            </summary>
+        </member>
+        <member name="P:InformationProtection.File.FileNameProtected">
+            <summary>
+            What should the protected name of the file look like
+            </summary>
+        </member>
+        <member name="P:InformationProtection.File.FileNameUnprotected">
+            <summary>
+            What should the protected name of the file look like
             </summary>
         </member>
         <member name="M:InformationProtection.File.#ctor(PSFramework.Parameter.PathFileSingleParameter,InformationProtection.MipSession)">
@@ -172,6 +192,24 @@
             <summary>
             The main session host, owning all MIP operations in the process
             </summary>
+        </member>
+        <member name="F:InformationProtection.MipHost.FileTypesIntegrated">
+            <summary>
+            List of file extensions that natively support all labeling without changing the name
+            </summary>
+            <link>https://learn.microsoft.com/en-us/information-protection/develop/concept-supported-filetypes</link>
+        </member>
+        <member name="F:InformationProtection.MipHost.FileTypesLimitedFrom">
+            <summary>
+            File types that can be protected, but cannot have a label without protection. Mapped from their unprotected extension to their protected one.
+            </summary>
+            <link>https://learn.microsoft.com/en-us/information-protection/develop/concept-supported-filetypes</link>
+        </member>
+        <member name="F:InformationProtection.MipHost.FileTypesLimitedTo">
+            <summary>
+            File types that can be protected, but cannot have a label without protection. Mapped from their protected extension to their unprotected one.
+            </summary>
+            <link>https://learn.microsoft.com/en-us/information-protection/develop/concept-supported-filetypes</link>
         </member>
         <member name="F:InformationProtection.MipHost.Context">
             <summary>

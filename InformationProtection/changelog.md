@@ -7,6 +7,7 @@
 + Upd: Connect-InformationProtection - Add support for a `-Certificate` parameter to simplify application authentication
 + Upd: Connect-InformationProtection - Enables specifying the email address used for metadata on labeled files.
 + Upd: Set-MipLabel - no longer clears files to 0 bytes when applying the same label again.
++ Upd: Set-MipLabel - updates the extension in the same way the desktop client would (.txt -> .ptxt, etc.)
 
 ## 1.0.11 (2026-03-12)
 
