@@ -48,6 +48,7 @@
 		'Disconnect-InformationProtection'
 		'Get-MipFile'
 		'Get-MipLabel'
+		'Get-MipSession'
 		'Import-MipSession'
 		'New-MipSession'
 		'Remove-MipLabel'

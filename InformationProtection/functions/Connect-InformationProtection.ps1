@@ -51,7 +51,7 @@
 
 	.PARAMETER Email
 		Email address to register on the session object.
-		The protection api requires this to be specified when authenticating as an application, rather than a user.
+		Used for metadata when labelling files.
 
 	.PARAMETER PassThru
 		Returns the MIP session as an object, on top of storing it as the module's default session.

@@ -29,7 +29,16 @@ namespace InformationProtection
             {
                 if (!String.IsNullOrEmpty(_Email))
                     return _Email;
-                return Delegate?.GetPrincipal();
+
+                // Ensure Email is actually an Email Address, as technically required.
+                // When connecting as Application, the principal is just a Guid by default.
+                string mail = Delegate?.GetPrincipal();
+                if (String.IsNullOrEmpty(mail))
+                    mail = $"{Guid.Empty.ToString()}@contoso.com";
+                else if (!mail.Contains("@"))
+                    mail = $"{mail}@contoso.com";
+
+                return mail;
             }
             set { _Email = value; }
         }

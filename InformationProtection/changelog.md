@@ -1,5 +1,12 @@
 ﻿# Changelog
 
+## ???
+
++ New: Get-MipLabel - Returns the currently established MIP session.
++ New: Remove-MipLabel - makes it all go away
++ Upd: Connect-InformationProtection - Enables specifying the email address used for metadata on labeled files.
++ Upd: Set-MipLabel - no longer clears files to 0 bytes when applying the same label again.
+
 ## 1.0.11 (2026-03-12)
 
 + New: Disconnect-InformationProtection - Disconnects from MIP.
