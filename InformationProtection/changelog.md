@@ -4,6 +4,7 @@
 
 + New: Get-MipLabel - Returns the currently established MIP session.
 + New: Remove-MipLabel - makes it all go away
++ Upd: Connect-InformationProtection - Add support for a `-Certificate` parameter to simplify application authentication
 + Upd: Connect-InformationProtection - Enables specifying the email address used for metadata on labeled files.
 + Upd: Set-MipLabel - no longer clears files to 0 bytes when applying the same label again.
 
