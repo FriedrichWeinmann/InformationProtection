@@ -55,6 +55,11 @@
 
 	.PARAMETER PassThru
 		Returns the MIP session as an object, on top of storing it as the module's default session.
+
+	.PARAMETER LogLevel
+		The level of details to include in the MIP-integrated logging.
+		Logs can be found under "%localappdata%\PowerShell\InformationProtection\logs" or the non-windows equivalent.
+		Defaults to: Error.
 	
 	.EXAMPLE
 		PS C:\> Connect-InformationProtection
@@ -83,7 +88,10 @@
 		$Email,
 
 		[switch]
-		$PassThru
+		$PassThru,
+
+		[Microsoft.InformationProtection.LogLevel]
+		$LogLevel = 'Error'
 	)
 	begin {
 		$services = $script:_serviceSelector.GetServiceMap($ServiceMap)

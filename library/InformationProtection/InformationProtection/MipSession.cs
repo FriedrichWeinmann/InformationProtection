@@ -91,13 +91,14 @@ namespace InformationProtection
         /// <param name="AzureRightsManagement">The EntraAuth token to interact with the https://aadrm.com/</param>
         /// <param name="MIPSyncService">The EntraAuth token to interact with the https://psor.o365syncservice.com</param>
         /// <param name="LogPath">The place where the data nobody reads is written to.</param>
-        public void Authenticate(PSObject AzureRightsManagement, PSObject MIPSyncService, string LogPath)
+        /// <param name="LogLevel">The level of detail to include in the MIP Logs</param>
+        public void Authenticate(PSObject AzureRightsManagement, PSObject MIPSyncService, string LogPath, LogLevel LogLevel)
         {
             // Do a clean disconnect first - has no effect if not connected
             Disconnect();
             Delegate = new AuthDelegateImplementation(AzureRightsManagement, MIPSyncService);
 
-            MipConfiguration mipConfiguration = new MipConfiguration(Delegate.GetAppInfo(), LogPath, LogLevel.Error, false, CacheStorageType.OnDiskEncrypted);
+            MipConfiguration mipConfiguration = new MipConfiguration(Delegate.GetAppInfo(), LogPath, LogLevel, false, CacheStorageType.OnDiskEncrypted);
 
             Context = MIP.CreateMipContext(mipConfiguration);
 
@@ -133,7 +134,7 @@ namespace InformationProtection
             if (FileEngine == null) return;
             if (FileProfile == null) return;
 
-            Task.Run(async () => await FileProfile.DeleteEngineAsync(FileEngine.Settings.EngineId));
+            // Task.Run(async () => await FileProfile.DeleteEngineAsync(FileEngine.Settings.EngineId));
             // FileEngine.Dispose();
             // FileProfile.Dispose();
             FileEngine = null;
@@ -166,7 +167,7 @@ namespace InformationProtection
             if (ProtectionEngine == null) return;
             if (ProtectionProfile == null) return;
 
-            Task.Run(async () => await ProtectionProfile.DeleteEngineAsync(ProtectionEngine.Settings.EngineId));
+            // Task.Run(async () => await ProtectionProfile.DeleteEngineAsync(ProtectionEngine.Settings.EngineId));
             // ProtectionEngine.Dispose();
             // ProtectionProfile.Dispose();
             ProtectionEngine = null;
@@ -199,7 +200,7 @@ namespace InformationProtection
             if (PolicyEngine == null) return;
             if (PolicyProfile == null) return;
 
-            Task.Run(async () => await PolicyProfile.DeleteEngineAsync(PolicyEngine.Settings.Id));
+            // Task.Run(async () => await PolicyProfile.DeleteEngineAsync(PolicyEngine.Settings.Id));
             // PolicyEngine.Dispose();
             // PolicyProfile.Dispose();
             PolicyEngine = null;
