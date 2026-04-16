@@ -67,6 +67,11 @@
 	}
 	process {
 		foreach ($filePath in $Path) {
+			try { $file = Get-MipFile -Path $filePath -Session $sessionToUse -ErrorAction Stop }
+			catch {
+				Write-Error $_
+				continue
+			}
 			$file = [InformationProtection.File]::new($filePath, $sessionToUse)
 			if (-not $file.Label) {
 				Write-PSFMessage -Level Verbose -String 'Remove-MipLabel.NotLabeled' -StringValues $filePath

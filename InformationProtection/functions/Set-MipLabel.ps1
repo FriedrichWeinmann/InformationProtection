@@ -103,7 +103,11 @@
 	}
 	process {
 		foreach ($filePath in $Path) {
-			$file = [InformationProtection.File]::new($filePath, $sessionToUse)
+			try { $file = Get-MipFile -Path $filePath -Session $sessionToUse -ErrorAction Stop }
+			catch {
+				Write-Error $_
+				continue
+			}
 			if ($file.LabelID -eq $labelObject.Id -and -not $Force) {
 				Write-PSFMessage -Level Verbose -String 'Set-MipLabel.Already.Labeled' -StringValues $filePath, $labelObject.Name, $labelObject.ID
 				continue
