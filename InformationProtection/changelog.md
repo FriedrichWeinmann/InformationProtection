@@ -1,6 +1,6 @@
 ﻿# Changelog
 
-## ???
+## 1.0.17 (2026-04-16)
 
 + New: Get-MipLabel - Returns the currently established MIP session.
 + New: Remove-MipLabel - makes it all go away
