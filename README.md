@@ -29,39 +29,39 @@ The MIP SDK accesses two resources - the "Azure Rights Management Services" and 
 
 > [How to set up an Application in Entra](https://github.com/FriedrichWeinmann/EntraAuth/blob/master/docs/overview.md)
 
+### Delegate Authentication
+
 For delegate authentication, each service only offers a single scope, which is needed:
 
-![Azure Rights Management: "user_impersonation". Microsoft Information Protection Sync Service: "UnifiedPolicy.User.Read"](_content/scopes.png)
+![Azure Rights Management Service: "user_impersonation". Microsoft Information Protection Sync Service: "UnifiedPolicy.User.Read"](_content/scopes-delegate.png)
 
-The application scopes are not much more complex.
-
-## Connect
+#### Connect
 
 There are two ways to perform the authentication:
 
 + Use previously established EntraAuth sessions
 + Create new sessions
 
-### Previously established sessions
+#### Previously established sessions
 
 If you have already previously established a connection using "Connect-EntraService", you can reuse those.
 By default, the services you need a connection to are "AzureRightsManagement" and "MIPSyncService" (which are registered when you import this module).
 This option gives you the free choice about authentication methods used, covering all the scenarios supported by EntraAuth.
 
-> Example 1: Delegate authentication using the browser
+> Example
 
 ```powershell
 Connect-EntraService -TenantID $tenantID -ClientID $clientID -Service AzureRightsManagement
 Connect-EntraService -TenantID $tenantID -ClientID $clientID -Service MIPSyncService -UseRefreshToken
 ```
 
-Example 2: Application authentication using a certificate
+Note: This example assumes you previously already imported the InformationProtection module, e.g. via:
 
 ```powershell
-Connect-EntraService -TenantID $tenantID -ClientID $clientID -Service AzureRightsManagement, MIPSyncService -Certificate $cert
+Import-Module InformationProtection
 ```
 
-### Create new sessions
+#### Create new sessions
 
 You can establish new EntraAuth sessions as part of this command, by specifying the ClientID of the Entra Application to use:
 
@@ -70,6 +70,39 @@ Connect-InformationProtection -ClientID $clientID
 ```
 
 This will always only be an interactive session, authenticating using the local default browser.
+
+### Application Authentication
+
+For application authentication, a different scope setup is required:
+
+![Azure Rights Management Service: "Content.SuperUser", "Content.Writer". Microsoft Information Protection Sync Service: "UnifiedPolicy.Tenant.Read"](_content/scopes-application.png)
+
+#### Connect
+
+There are two ways to perform the authentication:
+
++ Use previously established EntraAuth sessions
++ Create new sessions
+
+#### Previously established sessions
+
+If you have already previously established a connection using "Connect-EntraService", you can reuse those.
+By default, the services you need a connection to are "AzureRightsManagement" and "MIPSyncService" (which are registered when you import this module).
+This option gives you the free choice about authentication methods used, covering all the scenarios supported by EntraAuth.
+
+> Example
+
+```powershell
+Connect-EntraService -TenantID $tenantID -ClientID $clientID -Service AzureRightsManagement, MIPSyncService -CertificateThumbprint $thumbprint
+```
+
+#### Create new sessions
+
+You can establish new EntraAuth sessions as part of this command, by specifying the ClientID, TenantID and Certificate object of the Entra Application to use:
+
+```powershell
+Connect-InformationProtection -ClientID $clientID -TenantID $tenantID -Certificate $cert
+```
 
 ## Profit
 
@@ -92,4 +125,10 @@ Get-ChildItem -Path . -Recurse -File | Get-MipFile
 
 ```powershell
 Get-ChildItem -Path . -Recurse -File | Set-MipLabel -Label 'Highly Confidential\All Employees'
+```
+
+> Remove Label of File
+
+```powershell
+Remove-MipLabel -Path .\test.ptxt -Justification 'Was just a test file'
 ```

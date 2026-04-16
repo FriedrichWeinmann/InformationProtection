@@ -98,6 +98,11 @@
             The full path of the file
             </summary>
         </member>
+        <member name="P:InformationProtection.File.Info">
+            <summary>
+            The File Information Object representing the file in the filesystem
+            </summary>
+        </member>
         <member name="P:InformationProtection.File.Handler">
             <summary>
             The file handler, used to execute logic with
@@ -123,18 +128,35 @@
             ID of the applied label (if any)
             </summary>
         </member>
-        <member name="M:InformationProtection.File.#ctor(PSFramework.Parameter.PathFileSingleParameter)">
+        <member name="P:InformationProtection.File.CanBeUnprotected">
+            <summary>
+            Whether the file can be labeled without protection
+            </summary>
+        </member>
+        <member name="P:InformationProtection.File.FileNameProtected">
+            <summary>
+            What should the protected name of the file look like
+            </summary>
+        </member>
+        <member name="P:InformationProtection.File.FileNameUnprotected">
+            <summary>
+            What should the protected name of the file look like
+            </summary>
+        </member>
+        <member name="M:InformationProtection.File.#ctor(PSFramework.Parameter.PathFileSingleParameter,InformationProtection.MipSession)">
             <summary>
             Create a new file object from a path
             </summary>
             <param name="Path">The path to the file. Can be PowerShell-relative, will be resolved.</param>
+            <param name="Session">The MIP Session used to perform labeling operations.</param>
             <exception cref="T:System.InvalidOperationException">Without connection, nothing can happen.</exception>
         </member>
-        <member name="M:InformationProtection.File.#ctor(System.Object)">
+        <member name="M:InformationProtection.File.#ctor(System.Object,InformationProtection.MipSession)">
             <summary>
             Create a new file object from a path.
             </summary>
             <param name="Path">The path to the file. Can be PowerShell-relative, will be resolved.</param>
+            <param name="Session">The MIP Session used to perform labeling operations.</param>
         </member>
         <member name="M:InformationProtection.File.RefreshState">
             <summary>
@@ -152,6 +174,14 @@
             <exception cref="T:System.ArgumentException">When source and destination path are equal, bad things happen.</exception>
             <param name="Method">Whether this is an administrative action (Privileged) or regular user action (Standard)</param>
         </member>
+        <member name="M:InformationProtection.File.RemoveLabel(PSFramework.Parameter.PathNewFileSingleParameter,System.String,Microsoft.InformationProtection.AssignmentMethod)">
+            <summary>
+            Removes the assigned label
+            </summary>
+            <param name="Destination">The destination path for the labeled file</param>
+            <param name="Justification">The reason for the label change</param>
+            <param name="Method">Whether this is an administrative action (Privileged) or regular user action (Standard)</param>
+        </member>
         <member name="M:InformationProtection.File.GetLabel">
             <summary>
             Reloads and reads the current label
@@ -162,6 +192,24 @@
             <summary>
             The main session host, owning all MIP operations in the process
             </summary>
+        </member>
+        <member name="F:InformationProtection.MipHost.FileTypesIntegrated">
+            <summary>
+            List of file extensions that natively support all labeling without changing the name
+            </summary>
+            <link>https://learn.microsoft.com/en-us/information-protection/develop/concept-supported-filetypes</link>
+        </member>
+        <member name="F:InformationProtection.MipHost.FileTypesLimitedFrom">
+            <summary>
+            File types that can be protected, but cannot have a label without protection. Mapped from their unprotected extension to their protected one.
+            </summary>
+            <link>https://learn.microsoft.com/en-us/information-protection/develop/concept-supported-filetypes</link>
+        </member>
+        <member name="F:InformationProtection.MipHost.FileTypesLimitedTo">
+            <summary>
+            File types that can be protected, but cannot have a label without protection. Mapped from their protected extension to their unprotected one.
+            </summary>
+            <link>https://learn.microsoft.com/en-us/information-protection/develop/concept-supported-filetypes</link>
         </member>
         <member name="F:InformationProtection.MipHost.Context">
             <summary>
@@ -243,6 +291,106 @@
             </summary>
         </member>
         <member name="M:InformationProtection.MipHost.Disconnect">
+            <summary>
+            Disconnects and disposes all MIP SDK context data
+            </summary>
+        </member>
+        <member name="T:InformationProtection.MipSession">
+            <summary>
+            A single active MIP Session, containing all the information needed to execute MIP operations
+            </summary>
+        </member>
+        <member name="P:InformationProtection.MipSession.Name">
+            <summary>
+            Name of the account used for authentication
+            </summary>
+        </member>
+        <member name="P:InformationProtection.MipSession.Email">
+            <summary>
+            Email of the account used for authentication
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipSession.Context">
+            <summary>
+            The top level MIP Engine Reference
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipSession.Delegate">
+            <summary>
+            The authentication implementation
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipSession.FileProfile">
+            <summary>
+            The main settings for file operations
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipSession.FileEngine">
+            <summary>
+            The engine that executes file operations based on its Profile
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipSession.ProtectionProfile">
+            <summary>
+            The main settings for protection operations (encrypt / decrypt)
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipSession.ProtectionEngine">
+            <summary>
+            The engine that executes protection operations based on its Profile
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipSession.PolicyProfile">
+            <summary>
+            The main settings for policy operations
+            </summary>
+        </member>
+        <member name="F:InformationProtection.MipSession.PolicyEngine">
+            <summary>
+            The engine that executes policy operations based on its Profile
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipSession.Authenticate(System.Management.Automation.PSObject,System.Management.Automation.PSObject,System.String,Microsoft.InformationProtection.LogLevel)">
+            <summary>
+            Setup Auhentication for the MIP SDK.
+            The tokens must have previously been created using Connect-EntraService and the respective services needed.
+            </summary>
+            <param name="AzureRightsManagement">The EntraAuth token to interact with the https://aadrm.com/</param>
+            <param name="MIPSyncService">The EntraAuth token to interact with the https://psor.o365syncservice.com</param>
+            <param name="LogPath">The place where the data nobody reads is written to.</param>
+            <param name="LogLevel">The level of detail to include in the MIP Logs</param>
+        </member>
+        <member name="M:InformationProtection.MipSession.StartFile">
+            <summary>
+            Initializes the File SDK Components
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipSession.StopFile">
+            <summary>
+            Cleans up the File SDK Components
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipSession.StartProtection">
+            <summary>
+            Initializes the Protection SDK Components
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipSession.StopProtection">
+            <summary>
+            Cleans up the Protection SDK Components
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipSession.StartPolicy">
+            <summary>
+            Initializes the Policy SDK Components
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipSession.StopPolicy">
+            <summary>
+            Cleans up the Policy SDK Components
+            </summary>
+        </member>
+        <member name="M:InformationProtection.MipSession.Disconnect">
             <summary>
             Disconnects and disposes all MIP SDK context data
             </summary>

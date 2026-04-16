@@ -2,7 +2,8 @@
 using Microsoft.InformationProtection.File;
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PSFramework.Parameter;
@@ -23,6 +24,11 @@ namespace InformationProtection
         /// The full path of the file
         /// </summary>
         public string Path { get; private set; }
+
+        /// <summary>
+        /// The File Information Object representing the file in the filesystem
+        /// </summary>
+        public FileInfo Info { get; private set; }
 
         /// <summary>
         /// The file handler, used to execute logic with
@@ -49,15 +55,64 @@ namespace InformationProtection
         /// </summary>
         public string LabelID { get; private set; }
 
+        #region Capability Metadata
+        /// <summary>
+        /// Whether the file can be labeled without protection
+        /// </summary>
+        public bool CanBeUnprotected { get => MipHost.FileTypesIntegrated.Contains(Info.Extension, StringComparer.OrdinalIgnoreCase); }
+
+        /// <summary>
+        /// What should the protected name of the file look like
+        /// </summary>
+        public string FileNameProtected
+        {
+            get
+            {
+                if (MipHost.FileTypesIntegrated.Contains(Info.Extension, StringComparer.OrdinalIgnoreCase))
+                    return Info.Name;
+                if (MipHost.FileTypesLimitedTo.ContainsKey(Info.Extension))
+                    return Info.Name;
+                if (MipHost.FileTypesLimitedFrom.ContainsKey(Info.Extension))
+                    return $"{Info.Name.Substring(0, Info.Name.Length - Info.Extension.Length)}{MipHost.FileTypesLimitedFrom[Info.Extension]}";
+                if (String.Equals(Info.Extension, ".pfile", StringComparison.OrdinalIgnoreCase))
+                    return Info.Name;
+                return $"{Info.Name}.pfile";
+            }
+        }
+
+        /// <summary>
+        /// What should the protected name of the file look like
+        /// </summary>
+        public string FileNameUnprotected
+        {
+            get
+            {
+                if (MipHost.FileTypesIntegrated.Contains(Info.Extension, StringComparer.OrdinalIgnoreCase))
+                    return Info.Name;
+                if (MipHost.FileTypesLimitedFrom.ContainsKey(Info.Extension))
+                    return Info.Name;
+                if (MipHost.FileTypesLimitedTo.ContainsKey(Info.Extension))
+                    return $"{Info.Name.Substring(0, Info.Name.Length - Info.Extension.Length)}{MipHost.FileTypesLimitedTo[Info.Extension]}";
+                if (String.Equals(Info.Extension, ".pfile", StringComparison.OrdinalIgnoreCase))
+                    return Info.Name.Substring(0, Info.Name.Length - 6);
+                return Info.Name;
+            }
+        }
+        #endregion Capability Metadata
+
+        private MipSession _Session;
+
         /// <summary>
         /// Create a new file object from a path
         /// </summary>
         /// <param name="Path">The path to the file. Can be PowerShell-relative, will be resolved.</param>
+        /// <param name="Session">The MIP Session used to perform labeling operations.</param>
         /// <exception cref="InvalidOperationException">Without connection, nothing can happen.</exception>
-        public File(PathFileSingleParameter Path)
+        public File(PathFileSingleParameter Path, MipSession Session)
         {
-            if (null == MipHost.Context)
-                throw new InvalidOperationException("Not yet connected! Call Authenticator.Authenticate first!");
+            if (null == Session.Context)
+                throw new InvalidOperationException("Not yet connected! Call Session.Authenticate first!");
+            _Session = Session;
             this.Path = Path;
             RefreshState();
         }
@@ -65,8 +120,9 @@ namespace InformationProtection
         /// Create a new file object from a path.
         /// </summary>
         /// <param name="Path">The path to the file. Can be PowerShell-relative, will be resolved.</param>
-        public File(object Path)
-            :this(new PathFileSingleParameter(Path))
+        /// <param name="Session">The MIP Session used to perform labeling operations.</param>
+        public File(object Path, MipSession Session)
+            :this(new PathFileSingleParameter(Path), Session)
         {
 
         }
@@ -77,7 +133,7 @@ namespace InformationProtection
         /// <exception cref="InvalidOperationException">Can only be called if connected, has a path and the file exists</exception>
         public void RefreshState()
         {
-            if (null == MipHost.Context)
+            if (null == _Session.Context)
                 throw new InvalidOperationException("Not yet connected! Call Authenticator.Authenticate first!");
 
             if (String.IsNullOrEmpty(Path))
@@ -86,8 +142,9 @@ namespace InformationProtection
             if (!System.IO.File.Exists(Path))
                 throw new InvalidOperationException($"Path does not exist: {Path}!");
 
-            Handler = Task.Run(async () => await MipHost.FileEngine.CreateFileHandlerAsync(Path, Path, true)).Result;
+            Handler = Task.Run(async () => await _Session.FileEngine.CreateFileHandlerAsync(Path, Path, true)).Result;
             Label = Handler.Label;
+            Info = new FileInfo(Path);
             if (Label == null)
                 return;
             
@@ -118,7 +175,27 @@ namespace InformationProtection
                 labelingOptions.JustificationMessage = Justification;
             }
 
-            Handler.SetLabel(MipHost.FileEngine.GetLabelById(LabelID), labelingOptions, new ProtectionSettings());
+            Handler.SetLabel(_Session.FileEngine.GetLabelById(LabelID), labelingOptions, new ProtectionSettings());
+            var result = Task.Run(async () => await Handler.CommitAsync(Destination)).Result;
+        }
+
+        /// <summary>
+        /// Removes the assigned label
+        /// </summary>
+        /// <param name="Destination">The destination path for the labeled file</param>
+        /// <param name="Justification">The reason for the label change</param>
+        /// <param name="Method">Whether this is an administrative action (Privileged) or regular user action (Standard)</param>
+        public void RemoveLabel(PathNewFileSingleParameter Destination, string Justification, AssignmentMethod Method)
+        {
+            LabelingOptions labelingOptions = new LabelingOptions();
+            labelingOptions.AssignmentMethod = Method;
+
+            if (!String.IsNullOrEmpty(Justification))
+            {
+                labelingOptions.IsDowngradeJustified = true;
+                labelingOptions.JustificationMessage = Justification;
+            }
+            Handler.DeleteLabel(labelingOptions);
             var result = Task.Run(async () => await Handler.CommitAsync(Destination)).Result;
         }
 

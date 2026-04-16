@@ -10,6 +10,11 @@
 	
 	.PARAMETER Path
 		Path to the file to scan.
+
+	.PARAMETER Session
+		MIP Session to use for the operation.
+		Overrides the use of the default session and would be used in situations when relabeling files from one tenant to another.
+		Use "New-MipSession" to create a standalone session object.
 	
 	.EXAMPLE
 		PS C:\> Get-MipFile -Path .\*
@@ -26,14 +31,28 @@
 	param (
 		[Parameter(Mandatory = $true, ValueFromPipeline = $true)]
 		[PSFFile]
-		$Path
+		$Path,
+
+		[InformationProtection.MipSession]
+		$Session
 	)
 	begin {
-		Assert-MIPConnection -Cmdlet $PSCmdlet
+		Assert-MIPConnection -Cmdlet $PSCmdlet -Session $Session
+		$sessionToUse = $script:_session
+		if ($Session.Context) { $sessionToUse = $Session}
 	}
 	process {
 		foreach ($filePath in $Path) {
-			[InformationProtection.File]::new($filePath)
+			try { [InformationProtection.File]::new($filePath, $sessionToUse) }
+			catch {
+				# Better message if possible
+				if ($_.Exception.GetBaseException() -is [Microsoft.InformationProtection.Exceptions.BadInputException]) {
+					Write-Error -Message $_.Exception.GetBaseException().Message -TargetObject $filePath
+				}
+				else {
+					Write-Error -Message $_ -TargetObject $filePath
+				}
+			}
 		}
 	}
 }

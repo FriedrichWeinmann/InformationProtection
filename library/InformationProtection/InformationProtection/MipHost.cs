@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Management.Automation;
 using System.Threading.Tasks;
 using Microsoft.InformationProtection;
@@ -13,6 +14,85 @@ namespace InformationProtection
     /// </summary>
     public static class MipHost
     {
+        /// <summary>
+        /// List of file extensions that natively support all labeling without changing the name
+        /// </summary>
+        /// <link>https://learn.microsoft.com/en-us/information-protection/develop/concept-supported-filetypes</link>
+        public static string[] FileTypesIntegrated = new string[] {
+            ".doc",
+            ".docm",
+            ".docx",
+            ".dot",
+            ".dotm",
+            ".dotx",
+            ".potm",
+            ".potx",
+            ".pps",
+            ".ppsm",
+            ".ppsx",
+            ".ppt",
+            ".pptm",
+            ".pptx",
+            ".vsdm",
+            ".vsdx",
+            ".vssm",
+            ".vssx",
+            ".vstm",
+            ".vstx",
+            ".xla",
+            ".xlam",
+            ".xls",
+            ".xlsb",
+            ".xlt",
+            ".xlsm",
+            ".xlsx",
+            ".xltm",
+            ".xltx",
+            ".xps"
+        };
+
+        /// <summary>
+        /// File types that can be protected, but cannot have a label without protection. Mapped from their unprotected extension to their protected one.
+        /// </summary>
+        /// <link>https://learn.microsoft.com/en-us/information-protection/develop/concept-supported-filetypes</link>
+        public static Dictionary<string, string> FileTypesLimitedFrom = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { ".txt", ".ptxt" },
+            { ".xml", ".pxml" },
+            { ".jpg", ".pjpg" },
+            { ".jpeg", ".pjpeg" },
+            { ".pdf", ".ppdf" },
+            { ".png", ".ppng" },
+            { ".tif", ".ptif" },
+            { ".tiff", ".ptiff" },
+            { ".bmp", ".pbmp" },
+            { ".gif", ".pgif" },
+            { ".jpe", ".pjpe" },
+            { ".jfif", ".pjfif" }
+        };
+
+        /// <summary>
+        /// File types that can be protected, but cannot have a label without protection. Mapped from their protected extension to their unprotected one.
+        /// </summary>
+        /// <link>https://learn.microsoft.com/en-us/information-protection/develop/concept-supported-filetypes</link>
+        public static Dictionary<string, string> FileTypesLimitedTo = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { ".ptxt", ".txt" },
+            { ".pxml", ".xml" },
+            { ".pjpg", ".jpg" },
+            { ".pjpeg", ".jpeg" },
+            { ".ppdf", ".pdf" },
+            { ".ppng", ".png" },
+            { ".ptif", ".tif" },
+            { ".ptiff", ".tiff" },
+            { ".pbmp", ".bmp" },
+            { ".pgif", ".gif" },
+            { ".pjpe", ".jpe" },
+            { ".pjfif", ".jfif" }
+        };
+
+
+
         /// <summary>
         /// The top level MIP Engine Reference
         /// </summary>
@@ -62,9 +142,11 @@ namespace InformationProtection
         /// <param name="LogPath">The place where the data nobody reads is written to.</param>
         public static void Authenticate(PSObject AzureRightsManagement, PSObject MIPSyncService, string LogPath)
         {
+            // Do a clean disconnect first - has no effect if not connected
+            Disconnect();
             Delegate = new AuthDelegateImplementation(AzureRightsManagement, MIPSyncService);
 
-            MipConfiguration mipConfiguration = new MipConfiguration(Delegate.GetAppInfo(), LogPath, LogLevel.Error, false);
+            MipConfiguration mipConfiguration = new MipConfiguration(Delegate.GetAppInfo(), LogPath, LogLevel.Error, false, CacheStorageType.OnDiskEncrypted);
 
             Context = MIP.CreateMipContext(mipConfiguration);
 
@@ -101,8 +183,8 @@ namespace InformationProtection
             if (FileProfile == null) return;
 
             Task.Run(async () => await FileProfile.DeleteEngineAsync(FileEngine.Settings.EngineId));
-            FileEngine.Dispose();
-            FileProfile.Dispose();
+            // FileEngine.Dispose();
+            // FileProfile.Dispose();
             FileEngine = null;
             FileProfile = null;
         }
@@ -134,8 +216,8 @@ namespace InformationProtection
             if (ProtectionProfile == null) return;
 
             Task.Run(async () => await ProtectionProfile.DeleteEngineAsync(ProtectionEngine.Settings.EngineId));
-            ProtectionEngine.Dispose();
-            ProtectionProfile.Dispose();
+            // ProtectionEngine.Dispose();
+            // ProtectionProfile.Dispose();
             ProtectionEngine = null;
             ProtectionProfile = null;
         }
@@ -167,8 +249,8 @@ namespace InformationProtection
             if (PolicyProfile == null) return;
 
             Task.Run(async () => await PolicyProfile.DeleteEngineAsync(PolicyEngine.Settings.Id));
-            PolicyEngine.Dispose();
-            PolicyProfile.Dispose();
+            // PolicyEngine.Dispose();
+            // PolicyProfile.Dispose();
             PolicyEngine = null;
             PolicyProfile = null;
         }
@@ -182,7 +264,8 @@ namespace InformationProtection
             StopProtection();
             StopPolicy();
 
-            Context.ShutDown();
+            if (Context != null)
+                Context.ShutDown();
 
             Context = null;
             Delegate = null;

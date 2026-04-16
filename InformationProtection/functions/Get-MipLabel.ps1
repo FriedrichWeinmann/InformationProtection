@@ -14,6 +14,11 @@
 	
 	.PARAMETER Filter
 		Name to filter the scopes by, when listing the available scopes.
+
+	.PARAMETER Session
+		MIP Session to use for the operation.
+		Overrides the use of the default session and would be used in situations when relabeling files from one tenant to another.
+		Use "New-MipSession" to create a standalone session object.
 	
 	.EXAMPLE
 		PS C:\> Get-MipLabel
@@ -33,14 +38,19 @@
 		
 		[Parameter(ParameterSetName = 'List')]
 		[string]
-		$Filter = '*'
+		$Filter = '*',
+
+		[InformationProtection.MipSession]
+		$Session
 	)
 	begin {
-		Assert-MIPConnection -Cmdlet $PSCmdlet
+		Assert-MIPConnection -Cmdlet $PSCmdlet -Session $Session
+		$sessionToUse = $script:_session
+		if ($Session.Context) { $sessionToUse = $Session }
 	}
 	process {
 		if ($PSCmdlet.ParameterSetName -eq 'List') {
-			foreach ($label in [InformationProtection.MipHost]::FileEngine.SensitivityLabels) {
+			foreach ($label in $sessionToUse.FileEngine.SensitivityLabels) {
 				if ($label.ID -eq $Filter -or $label.Name -like $Filter -or $label.FQLN -like $Filter) { $label }
 				foreach ($childLabel in $label.Children) {
 					if ($childLabel.ID -eq $Filter -or $childLabel.Name -like $Filter -or $childLabel.FQLN -like $Filter) { $childLabel }
@@ -50,7 +60,7 @@
 		}
 
 		foreach ($file in $Path) {
-			([InformationProtection.File]$file).GetLabel()
+			([InformationProtection.File]::new($file, $sessionToUse)).GetLabel()
 		}
 	}
 }
