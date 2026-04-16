@@ -34,6 +34,7 @@
 		Authenticate while creating new EntraAuth sessions for the services "AzureRightsManagement" and "MIPSyncService".
 		This will only use the Authorization Code delegate authentication flow.
 	#>
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "")]
 	[OutputType([InformationProtection.MipSession])]
 	[CmdletBinding()]
 	param (

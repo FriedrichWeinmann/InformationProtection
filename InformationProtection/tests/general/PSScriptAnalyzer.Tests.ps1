@@ -34,7 +34,7 @@ Describe 'Invoking PSScriptAnalyzer against commandbase' {
 
 	Context "Analyzing <BaseName>" -ForEach $commandFiles {
 		BeforeAll {
-			$analysis = Invoke-ScriptAnalyzer -Path $FullName -ExcludeRule PSAvoidTrailingWhitespace, PSShouldProcess
+			$analysis = Invoke-ScriptAnalyzer -Path $FullName -ExcludeRule PSAvoidTrailingWhitespace, PSShouldProcess -Settings "$PSScriptRoot\PSScriptAnalyzer.config.psd1"
 		}
 
 		It "Should pass <RuleName>" -Foreach $scriptAnalyzerRules {
