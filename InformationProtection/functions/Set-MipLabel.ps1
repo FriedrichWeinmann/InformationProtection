@@ -125,7 +125,7 @@
 				$file.Handler.Dispose()
 
 				# Step 2: Rename old file to temp name
-				try { Rename-Item -LiteralPath $file.Path -NewName $tempOldName -Force -ErrorAction Stop }
+				try { Rename-Item -LiteralPath $filePath -NewName $tempOldName -Force -ErrorAction Stop }
 				catch {
 					Remove-Item -LiteralPath $tempNewPath -Force
 					throw
