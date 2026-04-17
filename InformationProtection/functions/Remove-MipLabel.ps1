@@ -72,7 +72,6 @@
 				Write-Error $_
 				continue
 			}
-			$file = [InformationProtection.File]::new($filePath, $sessionToUse)
 			if (-not $file.Label) {
 				Write-PSFMessage -Level Verbose -String 'Remove-MipLabel.NotLabeled' -StringValues $filePath
 				continue
@@ -86,6 +85,7 @@
 			Invoke-PSFProtectedCommand -ActionString 'Remove-MipLabel.RemoveLabel' -ActionStringValues $file.Label.Label.Name, $file.Label.Label.ID -Target $file.Path -ScriptBlock {
 				# Step 1: Label & New File
 				$file.RemoveLabel($tempNewPath, $Justification, $Method)
+				$file.Handler.Dispose()
 
 				# Step 2: Rename old file to temp name
 				try { Rename-Item -LiteralPath $file.Path -NewName $tempOldName -Force -ErrorAction Stop }
@@ -105,7 +105,9 @@
 
 				# Step 4: Delete Renamed unlabeled file
 				Remove-Item -LiteralPath $tempOldPath
-			} -EnableException $killIt -PSCmdlet $PSCmdlet -Continue
+			} -EnableException $killIt -PSCmdlet $PSCmdlet -Continue -ErrorEvent {
+				$file.Handler.Dispose()
+			}
 		}
 	}
 }
