@@ -2,6 +2,9 @@
 # Write-PSFMessage, Stop-PSFFunction or the PSFramework validation scriptblocks
 @{
 	'Connect-InformationProtection.Error.NoTenantId' = 'No or invalid tenant ID provided! Authenticating with a certificate requires both client id and tenant id! See here for details: https://github.com/FriedrichWeinmann/InformationProtection?tab=readme-ov-file#setup-authentication' #
+
+	'New-MipSession.Error.NoTenantId'                = 'No Tenant ID provided! When connecting using a certificate, providing a tenant ID becomes mandatory!' #
+
 	'Remove-MipLabel.NotLabeled'                     = 'File "{0}" is not labelled, skipping.' # $filePath
 	'Remove-MipLabel.RemoveLabel'                    = 'Removing Label {0} ({1})' # $file.Label.Label.Name, $file.Label.Label.ID
 

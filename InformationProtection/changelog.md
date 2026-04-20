@@ -1,8 +1,12 @@
 ﻿# Changelog
 
+## 1.0.18 (2026-04-20)
+
++ Fix: New-MipSession - fails to create a session
+
 ## 1.0.17 (2026-04-16)
 
-+ New: Get-MipLabel - Returns the currently established MIP session.
++ New: Get-MipSession - Returns the currently established MIP session.
 + New: Remove-MipLabel - makes it all go away
 + Upd: Connect-InformationProtection - Add support for a `-Certificate` parameter to simplify application authentication
 + Upd: Connect-InformationProtection - Enables specifying the email address used for metadata on labeled files.

@@ -122,9 +122,10 @@
 			Invoke-PSFProtectedCommand -ActionString 'Set-MipLabel.ApplyLabel' -ActionStringValues $labelObject.Name, $labelObject.ID -Target $file.Path -ScriptBlock {
 				# Step 1: Label & New File
 				$file.SetLabel($labelObject.ID, $tempNewPath, $Justification, $Method)
+				$file.Dispose()
 
 				# Step 2: Rename old file to temp name
-				try { Rename-Item -LiteralPath $file.Path -NewName $tempOldName -Force -ErrorAction Stop }
+				try { Rename-Item -LiteralPath $filePath -NewName $tempOldName -Force -ErrorAction Stop }
 				catch {
 					Remove-Item -LiteralPath $tempNewPath -Force
 					throw
@@ -141,7 +142,9 @@
 
 				# Step 4: Delete Renamed unlabeled file
 				Remove-Item -LiteralPath $tempOldPath
-			} -EnableException $killIt -PSCmdlet $PSCmdlet -Continue
+			} -EnableException $killIt -PSCmdlet $PSCmdlet -Continue -ErrorEvent {
+				$file.Dispose()
+			}
 		}
 	}
 }
