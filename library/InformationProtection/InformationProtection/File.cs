@@ -13,7 +13,7 @@ namespace InformationProtection
     /// <summary>
     /// Wrapper around the MIP Tools specific to a single file.
     /// </summary>
-    public class File
+    public class File : IDisposable
     {
         /// <summary>
         /// The name of the file
@@ -207,6 +207,14 @@ namespace InformationProtection
         {
             RefreshState();
             return Label;
+        }
+
+        /// <summary>
+        /// Perform final cleanup
+        /// </summary>
+        public void Dispose()
+        {
+            Handler.Dispose();
         }
     }
 }

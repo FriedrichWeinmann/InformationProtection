@@ -188,6 +188,11 @@
             </summary>
             <returns>The label applied to the current file</returns>
         </member>
+        <member name="M:InformationProtection.File.Dispose">
+            <summary>
+            Perform final cleanup
+            </summary>
+        </member>
         <member name="T:InformationProtection.MipHost">
             <summary>
             The main session host, owning all MIP operations in the process
