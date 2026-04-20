@@ -1,6 +1,6 @@
 ﻿# Changelog
 
-## ???
+## 1.0.18 (2026-04-20)
 
 + Fix: New-MipSession - fails to create a session
 
