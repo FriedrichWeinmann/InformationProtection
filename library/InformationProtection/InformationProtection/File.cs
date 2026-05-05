@@ -18,7 +18,7 @@ namespace InformationProtection
         /// <summary>
         /// The name of the file
         /// </summary>
-        public string Name => System.IO.Path.GetFileName(Path);
+        public string Name { get; private set; }
 
         /// <summary>
         /// The full path of the file
@@ -26,9 +26,9 @@ namespace InformationProtection
         public string Path { get; private set; }
 
         /// <summary>
-        /// The File Information Object representing the file in the filesystem
+        /// The extension of the file
         /// </summary>
-        public FileInfo Info { get; private set; }
+        public string Extension { get; private set; }
 
         /// <summary>
         /// The file handler, used to execute logic with
@@ -59,7 +59,7 @@ namespace InformationProtection
         /// <summary>
         /// Whether the file can be labeled without protection
         /// </summary>
-        public bool CanBeUnprotected { get => MipHost.FileTypesIntegrated.Contains(Info.Extension, StringComparer.OrdinalIgnoreCase); }
+        public bool CanBeUnprotected { get => MipHost.FileTypesIntegrated.Contains(Extension, StringComparer.OrdinalIgnoreCase); }
 
         /// <summary>
         /// What should the protected name of the file look like
@@ -68,15 +68,15 @@ namespace InformationProtection
         {
             get
             {
-                if (MipHost.FileTypesIntegrated.Contains(Info.Extension, StringComparer.OrdinalIgnoreCase))
-                    return Info.Name;
-                if (MipHost.FileTypesLimitedTo.ContainsKey(Info.Extension))
-                    return Info.Name;
-                if (MipHost.FileTypesLimitedFrom.ContainsKey(Info.Extension))
-                    return $"{Info.Name.Substring(0, Info.Name.Length - Info.Extension.Length)}{MipHost.FileTypesLimitedFrom[Info.Extension]}";
-                if (String.Equals(Info.Extension, ".pfile", StringComparison.OrdinalIgnoreCase))
-                    return Info.Name;
-                return $"{Info.Name}.pfile";
+                if (MipHost.FileTypesIntegrated.Contains(Extension, StringComparer.OrdinalIgnoreCase))
+                    return Name;
+                if (MipHost.FileTypesLimitedTo.ContainsKey(Extension))
+                    return Name;
+                if (MipHost.FileTypesLimitedFrom.ContainsKey(Extension))
+                    return $"{Name.Substring(0, Name.Length - Extension.Length)}{MipHost.FileTypesLimitedFrom[Extension]}";
+                if (String.Equals(Extension, ".pfile", StringComparison.OrdinalIgnoreCase))
+                    return Name;
+                return $"{Name}.pfile";
             }
         }
 
@@ -87,15 +87,15 @@ namespace InformationProtection
         {
             get
             {
-                if (MipHost.FileTypesIntegrated.Contains(Info.Extension, StringComparer.OrdinalIgnoreCase))
-                    return Info.Name;
-                if (MipHost.FileTypesLimitedFrom.ContainsKey(Info.Extension))
-                    return Info.Name;
-                if (MipHost.FileTypesLimitedTo.ContainsKey(Info.Extension))
-                    return $"{Info.Name.Substring(0, Info.Name.Length - Info.Extension.Length)}{MipHost.FileTypesLimitedTo[Info.Extension]}";
-                if (String.Equals(Info.Extension, ".pfile", StringComparison.OrdinalIgnoreCase))
-                    return Info.Name.Substring(0, Info.Name.Length - 6);
-                return Info.Name;
+                if (MipHost.FileTypesIntegrated.Contains(Extension, StringComparer.OrdinalIgnoreCase))
+                    return Name;
+                if (MipHost.FileTypesLimitedFrom.ContainsKey(Extension))
+                    return Name;
+                if (MipHost.FileTypesLimitedTo.ContainsKey(Extension))
+                    return $"{Name.Substring(0, Name.Length - Extension.Length)}{MipHost.FileTypesLimitedTo[Extension]}";
+                if (String.Equals(Extension, ".pfile", StringComparison.OrdinalIgnoreCase))
+                    return Name.Substring(0, Name.Length - 6);
+                return Name;
             }
         }
         #endregion Capability Metadata
@@ -144,7 +144,9 @@ namespace InformationProtection
 
             Handler = Task.Run(async () => await _Session.FileEngine.CreateFileHandlerAsync(Path, Path, true)).Result;
             Label = Handler.Label;
-            Info = new FileInfo(Path);
+            FileInfo info = new FileInfo(Path);
+            Name = info.Name;
+            Extension = info.Extension;
             if (Label == null)
                 return;
             
