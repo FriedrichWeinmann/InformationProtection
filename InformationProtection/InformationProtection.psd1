@@ -3,7 +3,7 @@
 	RootModule = 'InformationProtection.psm1'
 	
 	# Version number of this module.
-	ModuleVersion = '1.0.18'
+	ModuleVersion = '1.0.20'
 	
 	# ID used to uniquely identify this module
 	GUID = '8513ebee-5a70-4df1-95ee-f7232fc76702'

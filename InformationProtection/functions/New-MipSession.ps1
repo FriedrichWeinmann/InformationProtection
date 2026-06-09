@@ -93,12 +93,20 @@
 		$logPath = Join-Path -Path (Get-PSFPath -Name LocalAppData) -ChildPath "PowerShell\InformationProtection\logs\$([guid]::NewGuid())"
 		$session = [InformationProtection.MipSession]::new()
 		if ($Email) { $session.Email = $Email }
-		$session.Authenticate(
-			(Get-EntraToken -Service $services.AzureRightsManagement),
-			(Get-EntraToken -Service $services.MIPSyncService),
-			$logPath,
-			$LogLevel
-		)
+		try {
+			$session.Authenticate(
+				(Get-EntraToken -Service $services.AzureRightsManagement),
+				(Get-EntraToken -Service $services.MIPSyncService),
+				$logPath,
+				$LogLevel
+			)
+		}
+		catch {
+			if ($_ -match 'LoadLibrary failed with error code 126') {
+				Write-PSFMessage -Level Warning -String 'New-MipSession.Error.Code126'
+			}
+			Stop-PSFFunction -String 'New-MipSession.Error.Authenticate' -ErrorRecord $_ -Cmdlet $PSCmdlet -EnableException $true
+		}
 		$session
 	}
 }
