@@ -43,6 +43,13 @@
 		Will in most cases break the file.
 		Necessary when migrating to the same default builtin label in another tenant.
 
+	.PARAMETER Sleep
+		Milliseconds to wait after the labeling action, before replacing the original file with the newly-labeled copy.
+		Labeling is performed in 4 steps: Apply label to new file copy under a temporary name. Rename original file to temp name. Rename labeled copy to original name. Delete original file.
+		This allows a rollback in failure situations - like policy-based failure to apply label - without risk to the original file.
+		However, based on timings, the files might be locked temporarily (e.g. through AV software).
+		This sleep interval allows for those locks to resolve, but comes at a per-file performance cost.
+
 	.PARAMETER WhatIf
 		If this switch is enabled, no actions are performed but informational messages will be displayed that explain what would happen if the command were to run.
 	
@@ -81,7 +88,10 @@
 		$Session,
 
 		[switch]
-		$Force
+		$Force,
+
+		[int]
+		$Sleep
 	)
 	begin {
 		Assert-MIPConnection -Cmdlet $PSCmdlet -Session $Session
@@ -123,6 +133,9 @@
 				# Step 1: Label & New File
 				$file.SetLabel($labelObject.ID, $tempNewPath, $Justification, $Method)
 				$file.Dispose()
+
+				# Give it some time to release the file-lock
+				if ($Sleep) { Start-Sleep -Milliseconds $Sleep }
 
 				# Step 2: Rename old file to temp name
 				try { Rename-Item -LiteralPath $filePath -NewName $tempOldName -Force -ErrorAction Stop }

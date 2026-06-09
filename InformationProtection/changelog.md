@@ -1,5 +1,10 @@
 ﻿# Changelog
 
+## 1.0.20 (2026-06-09)
+
++ Fix: Connect-InformationProtection - Handles assembly load errors when connecting, especially without the VC++ runtime missing.
++ Fix: New-MipSession - Handles assembly load errors when connecting, especially without the VC++ runtime missing.
+
 ## 1.0.18 (2026-04-20)
 
 + Fix: New-MipSession - fails to create a session
