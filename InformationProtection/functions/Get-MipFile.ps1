@@ -9,7 +9,11 @@
 		Must be connected first using "Connect-InformationProtection".
 	
 	.PARAMETER Path
-		Path to the file to scan.
+		Path to the file(s) to scan.
+
+	.PARAMETER LiteralPath
+		Path to the file(s) to scan.
+		Does not interpret wildcards.
 
 	.PARAMETER Session
 		MIP Session to use for the operation.
@@ -33,6 +37,9 @@
 		[PSFFile]
 		$Path,
 
+		[PSFLiteralPath]
+		$LiteralPath,
+
 		[InformationProtection.MipSession]
 		$Session
 	)
@@ -42,7 +49,8 @@
 		if ($Session.Context) { $sessionToUse = $Session}
 	}
 	process {
-		foreach ($filePath in $Path) {
+		foreach ($filePath in $Path + $LiteralPath) {
+			if (-not $filePath) { continue }
 			try { [InformationProtection.File]::new($filePath, $sessionToUse) }
 			catch {
 				# Better message if possible
