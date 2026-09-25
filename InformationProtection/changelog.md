@@ -1,5 +1,10 @@
 ﻿# Changelog
 
+## 1.0.26 (2026-09-25)
+
++ Upd: Class File - added constructor to allow literal paths
++ Fix: Get-MipFile - Literal Paths would still be interpreted
+
 ## 1.0.24 (2026-09-25)
 
 + Fix: Pathing - fixed parameter resolution / mandatory behavior to allow for either or both on relevant commands.
