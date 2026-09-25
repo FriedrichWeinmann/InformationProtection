@@ -126,6 +126,21 @@ namespace InformationProtection
         {
 
         }
+        /// <summary>
+        /// Create a new file object from a path
+        /// </summary>
+        /// <param name="Path">The literal path to the file.</param>
+        /// <param name="Session">The MIP Session used to perform labeling operations.</param>
+        /// <param name="IsLiteral">Dummy Parameter to not break previous usage from PowerShell, which would bind strings to the PathFileSingleParameter overload.</param>
+        /// <exception cref="InvalidOperationException">Without connection, nothing can happen.</exception>
+        public File(string Path, MipSession Session, bool IsLiteral)
+        {
+            if (null == Session.Context)
+                throw new InvalidOperationException("Not yet connected! Call Session.Authenticate first!");
+            _Session = Session;
+            this.Path = Path;
+            RefreshState();
+        }
 
         /// <summary>
         /// Reloads the label and protection status information

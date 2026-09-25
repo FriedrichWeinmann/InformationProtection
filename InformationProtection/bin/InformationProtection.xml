@@ -158,6 +158,15 @@
             <param name="Path">The path to the file. Can be PowerShell-relative, will be resolved.</param>
             <param name="Session">The MIP Session used to perform labeling operations.</param>
         </member>
+        <member name="M:InformationProtection.File.#ctor(System.String,InformationProtection.MipSession,System.Boolean)">
+            <summary>
+            Create a new file object from a path
+            </summary>
+            <param name="Path">The literal path to the file.</param>
+            <param name="Session">The MIP Session used to perform labeling operations.</param>
+            <param name="IsLiteral">Dummy Parameter to not break previous usage from PowerShell, which would bind strings to the PathFileSingleParameter overload.</param>
+            <exception cref="T:System.InvalidOperationException">Without connection, nothing can happen.</exception>
+        </member>
         <member name="M:InformationProtection.File.RefreshState">
             <summary>
             Reloads the label and protection status information

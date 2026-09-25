@@ -122,9 +122,10 @@
 		if (-not ($Path -or $LiteralPath)) {
 			Stop-PSFFunction -String 'General.Error.NoPath' -Cmdlet $PSCmdlet -EnableException $true -Category InvalidArgument
 		}
-		foreach ($filePath in $Path + $LiteralPath) {
+		$resolvedPaths = $Path + $LiteralPath | Select-Object -Unique
+		foreach ($filePath in $resolvedPaths) {
 			if (-not $filePath) { continue }
-			try { $file = Get-MipFile -Path $filePath -Session $sessionToUse -ErrorAction Stop }
+			try { $file = Get-MipFile -LiteralPath $filePath -Session $sessionToUse -ErrorAction Stop }
 			catch {
 				Write-Error $_
 				continue
