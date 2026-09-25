@@ -48,7 +48,7 @@
 	#>
 	[CmdletBinding(SupportsShouldProcess = $true)]
 	param (
-		[Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+		[Parameter(ValueFromPipeline = $true)]
 		[PsfFile]
 		$Path,
 
@@ -73,6 +73,9 @@
 		$killIt = $ErrorActionPreference -eq 'Stop'
 	}
 	process {
+		if (-not ($Path -or $LiteralPath)) {
+			Stop-PSFFunction -String 'General.Error.NoPath' -Cmdlet $PSCmdlet -EnableException $true -Category InvalidArgument
+		}
 		foreach ($filePath in $Path + $LiteralPath) {
 			if (-not $filePath) { continue }
 			try { $file = Get-MipFile -Path $filePath -Session $sessionToUse -ErrorAction Stop }
