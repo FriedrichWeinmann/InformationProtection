@@ -8,7 +8,11 @@
 		Generally NOT something we want to do, but sometimes it becomes necessary.
 	
 	.PARAMETER Path
-		Path to the file to unlabel.
+		Path to the file(s) to unlabel.
+
+	.PARAMETER LiteralPath
+		Path to the file(s) to unlabel.
+		Does not interpret wildcards.
 	
 	.PARAMETER Justification
 		The reason for the label removal.
@@ -48,6 +52,9 @@
 		[PsfFile]
 		$Path,
 
+		[PSFLiteralPath]
+		$LiteralPath,
+
 		[Parameter(Mandatory = $true)]
 		[string]
 		$Justification,
@@ -66,7 +73,8 @@
 		$killIt = $ErrorActionPreference -eq 'Stop'
 	}
 	process {
-		foreach ($filePath in $Path) {
+		foreach ($filePath in $Path + $LiteralPath) {
+			if (-not $filePath) { continue }
 			try { $file = Get-MipFile -Path $filePath -Session $sessionToUse -ErrorAction Stop }
 			catch {
 				Write-Error $_

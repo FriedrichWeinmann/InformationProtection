@@ -1,5 +1,11 @@
 ﻿# Changelog
 
+## 1.0.23 (2026-09-25)
+
++ Upd: Get-MipFile - added -LiteralPath parameter to allow paths with brackets in them
++ Upd: Remove-MipFile - added -LiteralPath parameter to allow paths with brackets in them
++ Upd: Set-MipFile - added -LiteralPath parameter to allow paths with brackets in them
+
 ## 1.0.20 (2026-06-09)
 
 + Fix: Connect-InformationProtection - Handles assembly load errors when connecting, especially without the VC++ runtime missing.
