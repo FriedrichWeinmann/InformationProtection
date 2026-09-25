@@ -1,5 +1,9 @@
 ﻿# Changelog
 
+## 1.0.24 (2026-09-25)
+
++ Fix: Pathing - fixed parameter resolution / mandatory behavior to allow for either or both on relevant commands.
+
 ## 1.0.23 (2026-09-25)
 
 + Upd: Get-MipFile - added -LiteralPath parameter to allow paths with brackets in them

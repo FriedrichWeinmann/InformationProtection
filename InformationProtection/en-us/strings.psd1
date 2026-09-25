@@ -1,6 +1,8 @@
 ﻿# This is where the strings go, that are written by
 # Write-PSFMessage, Stop-PSFFunction or the PSFramework validation scriptblocks
 @{
+	'General.Error.NoPath'                             = 'Neither -Path nor -LiteralPath were provided! Provide either (or both) to proceed.' #
+
 	'Connect-InformationProtection.Error.Authenticate' = 'Failed to authenticate to MIP' #
 	'Connect-InformationProtection.Error.Code126'      = "There was an error importing the native MIP libraries. This is usually caused when not installing the VC++ runtime libraries (v14.3+).`nGet the latest version here: https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#latest-supported-redistributable-version" #
 	'Connect-InformationProtection.Error.NoTenantId'   = 'No or invalid tenant ID provided! Authenticating with a certificate requires both client id and tenant id! See here for details: https://github.com/FriedrichWeinmann/InformationProtection?tab=readme-ov-file#setup-authentication' #

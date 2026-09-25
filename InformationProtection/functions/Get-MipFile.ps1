@@ -33,7 +33,7 @@
 	[OutputType([InformationProtection.File])]
 	[CmdletBinding()]
 	param (
-		[Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+		[Parameter(ValueFromPipeline = $true)]
 		[PSFFile]
 		$Path,
 
@@ -49,6 +49,9 @@
 		if ($Session.Context) { $sessionToUse = $Session}
 	}
 	process {
+		if (-not ($Path -or $LiteralPath)) {
+			Stop-PSFFunction -String 'General.Error.NoPath' -Cmdlet $PSCmdlet -EnableException $true -Category InvalidArgument
+		}
 		foreach ($filePath in $Path + $LiteralPath) {
 			if (-not $filePath) { continue }
 			try { [InformationProtection.File]::new($filePath, $sessionToUse) }
